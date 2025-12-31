@@ -255,7 +255,9 @@
             </h5>
             <div class="row g-3 mb-4">
               <div class="col-md-4">
-                <label class="form-label d-block">{$t("upload.fatigue")}</label>
+                <div class="form-label d-block text-white-50">
+                  {$t("upload.fatigue")}
+                </div>
                 <div class="btn-group w-100" role="group">
                   {#each [1, 2, 3, 4, 5] as level}
                     <input
@@ -276,7 +278,9 @@
               </div>
 
               <div class="col-md-4">
-                <label class="form-label d-block">{$t("upload.sleep")}</label>
+                <div class="form-label d-block text-white-50">
+                  {$t("upload.sleep")}
+                </div>
                 <div class="btn-group w-100" role="group">
                   {#each [1, 2, 3, 4, 5] as level}
                     <input

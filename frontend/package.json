@@ -15,12 +15,14 @@
 		"@sveltejs/adapter-auto": "^7.0.0",
 		"@sveltejs/kit": "^2.49.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@types/bootstrap": "^5.2.10",
 		"svelte": "^5.45.6",
 		"svelte-check": "^4.3.4",
 		"typescript": "^5.9.3",
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
+		"@popperjs/core": "^2.11.8",
 		"bootstrap": "^5.3.8",
 		"svelte-i18n": "^4.0.1"
 	}
