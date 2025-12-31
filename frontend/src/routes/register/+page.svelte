@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { api, type RegisterData } from "$lib/api";
+  import { t } from "svelte-i18n";
 
   let email = "";
   let password = "";
@@ -41,7 +42,7 @@
 </script>
 
 <svelte:head>
-  <title>Register - Trail Fit Uploader</title>
+  <title>{$t("register.title")} - {$t("app.title")}</title>
 </svelte:head>
 
 <div
@@ -51,7 +52,7 @@
     class="card bg-dark text-white p-4 w-100 shadow-lg"
     style="max-width: 500px; border-radius: 1rem;"
   >
-    <h1 class="text-center mb-4">Create Account</h1>
+    <h1 class="text-center mb-4">{$t("register.title")}</h1>
 
     {#if error}
       <div class="alert alert-danger" role="alert">
@@ -61,7 +62,7 @@
 
     <form on:submit|preventDefault={handleRegister}>
       <div class="mb-3">
-        <label for="email" class="form-label">Email *</label>
+        <label for="email" class="form-label">{$t("register.email")} *</label>
         <input
           type="email"
           class="form-control bg-dark text-white border-secondary"
@@ -73,7 +74,9 @@
       </div>
 
       <div class="mb-3">
-        <label for="password" class="form-label">Password *</label>
+        <label for="password" class="form-label"
+          >{$t("register.password")} *</label
+        >
         <input
           type="password"
           class="form-control bg-dark text-white border-secondary"
@@ -87,7 +90,7 @@
 
       <div class="mb-3">
         <label for="confirmPassword" class="form-label"
-          >Confirm Password *</label
+          >{$t("register.confirm_password")} *</label
         >
         <input
           type="password"
@@ -100,12 +103,14 @@
       </div>
 
       <h5 class="border-bottom border-secondary pb-2 mb-3 mt-4">
-        Athlete Profile
+        {$t("register.athlete_profile")}
       </h5>
 
       <div class="row g-3 mb-3">
         <div class="col-sm-6">
-          <label for="bodyWeight" class="form-label">Body Weight (kg)</label>
+          <label for="bodyWeight" class="form-label"
+            >{$t("register.body_weight")}</label
+          >
           <input
             type="number"
             class="form-control bg-dark text-white border-secondary"
@@ -119,7 +124,7 @@
         </div>
 
         <div class="col-sm-6">
-          <label for="age" class="form-label">Age</label>
+          <label for="age" class="form-label">{$t("register.age")}</label>
           <input
             type="number"
             class="form-control bg-dark text-white border-secondary"
@@ -134,22 +139,26 @@
 
       <div class="row g-3 mb-4">
         <div class="col-sm-6">
-          <label for="gender" class="form-label">Gender</label>
+          <label for="gender" class="form-label">{$t("register.gender")}</label>
           <select
             class="form-select bg-dark text-white border-secondary"
             id="gender"
             bind:value={gender}
           >
-            <option value="">Select...</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-            <option value="prefer_not_to_say">Prefer not to say</option>
+            <option value="">{$t("register.gender_options.select")}</option>
+            <option value="male">{$t("register.gender_options.male")}</option>
+            <option value="female"
+              >{$t("register.gender_options.female")}</option
+            >
+            <option value="other">{$t("register.gender_options.other")}</option>
+            <option value="prefer_not_to_say"
+              >{$t("register.gender_options.prefer_not_to_say")}</option
+            >
           </select>
         </div>
 
         <div class="col-sm-6">
-          <label for="vo2max" class="form-label">VO2max (ml/kg/min)</label>
+          <label for="vo2max" class="form-label">{$t("register.vo2max")}</label>
           <input
             type="number"
             class="form-control bg-dark text-white border-secondary"
@@ -168,14 +177,14 @@
         class="btn btn-primary w-100 py-2"
         disabled={loading}
       >
-        {loading ? "Creating Account..." : "Create Account"}
+        {loading ? $t("register.creating") : $t("register.create_button")}
       </button>
     </form>
 
     <p class="text-center mt-3 text-secondary">
-      Already have an account? <a
-        href="/login"
-        class="text-info text-decoration-none">Login</a
+      {$t("register.has_account")}
+      <a href="/login" class="text-info text-decoration-none"
+        >{$t("register.login_link")}</a
       >
     </p>
   </div>

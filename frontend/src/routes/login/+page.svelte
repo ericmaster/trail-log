@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { api } from "$lib/api";
+  import { t } from "svelte-i18n";
 
   let email = "";
   let password = "";
@@ -22,7 +23,7 @@
 </script>
 
 <svelte:head>
-  <title>Login - Trail Fit Uploader</title>
+  <title>{$t("login.title")} - {$t("app.title")}</title>
 </svelte:head>
 
 <div
@@ -32,7 +33,7 @@
     class="card bg-dark text-white p-4 w-100"
     style="max-width: 400px; border-radius: 1rem;"
   >
-    <h1 class="text-center mb-4">Login</h1>
+    <h1 class="text-center mb-4">{$t("login.title")}</h1>
 
     {#if error}
       <div class="alert alert-danger" role="alert">
@@ -42,7 +43,7 @@
 
     <form on:submit|preventDefault={handleLogin}>
       <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
+        <label for="email" class="form-label">{$t("login.email")}</label>
         <input
           type="email"
           class="form-control bg-dark text-white border-secondary"
@@ -54,7 +55,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
+        <label for="password" class="form-label">{$t("login.password")}</label>
         <input
           type="password"
           class="form-control bg-dark text-white border-secondary"
@@ -70,14 +71,14 @@
         class="btn btn-primary w-100 py-2"
         disabled={loading}
       >
-        {loading ? "Logging in..." : "Login"}
+        {loading ? $t("login.logging_in") : $t("login.login_button")}
       </button>
     </form>
 
     <p class="text-center mt-3 text-secondary">
-      Don't have an account? <a
-        href="/register"
-        class="text-info text-decoration-none">Register</a
+      {$t("login.no_account")}
+      <a href="/register" class="text-info text-decoration-none"
+        >{$t("login.register_link")}</a
       >
     </p>
   </div>

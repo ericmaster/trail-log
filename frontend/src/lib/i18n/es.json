@@ -1,0 +1,112 @@
+{
+    "app": {
+        "title": "Trail Fit",
+        "dashboard": "Panel",
+        "login": "Iniciar Sesión",
+        "get_started": "Empezar",
+        "copyright": "© 2026 Proyecto de Investigación Trail Fit. Todos los derechos reservados."
+    },
+    "landing": {
+        "title": "Trail Fit Uploader - Análisis de Trail Running",
+        "hero_title": "Domina tu Rendimiento en Trail.",
+        "hero_subtitle": "Únete a nuestro proyecto de investigación comunitaria. Aporta tus datos de trail running para ayudar a avanzar la ciencia del deporte y obtén información detallada sobre tu rendimiento a cambio.",
+        "join_study": "Unirse al Estudio",
+        "learn_more": "Más Información",
+        "advanced_analytics": "Analíticas Avanzadas",
+        "deep_dive": "Profundiza en tus métricas",
+        "how_it_works": "Cómo Funciona",
+        "symbiotic_relationship": "Una relación simbiótica entre la ciencia y el deporte",
+        "step1_title": "1. Sube tu Actividad",
+        "step1_desc": "Sube tus archivos .fit desde tu reloj favorito. Añade contexto como fatiga, clima y condiciones del sendero.",
+        "step2_title": "2. Analizamos",
+        "step2_desc": "Procesamos tus datos utilizando modelos fisiológicos avanzados para entender las demandas del trail running.",
+        "step3_title": "3. Mejoras",
+        "step3_desc": "Recibe retroalimentación inmediata y desgloses estadísticos de tu esfuerzo, ayudándote a entrenar de manera más inteligente."
+    },
+    "login": {
+        "title": "Iniciar Sesión",
+        "email": "Correo Electrónico",
+        "password": "Contraseña",
+        "login_button": "Entrar",
+        "logging_in": "Entrando...",
+        "no_account": "¿No tienes una cuenta?",
+        "register_link": "Regístrate"
+    },
+    "register": {
+        "title": "Crear Cuenta",
+        "email": "Correo Electrónico",
+        "password": "Contraseña",
+        "confirm_password": "Confirmar Contraseña",
+        "athlete_profile": "Perfil de Atleta",
+        "body_weight": "Peso Corporal (kg)",
+        "age": "Edad",
+        "gender": "Género",
+        "gender_options": {
+            "select": "Seleccionar...",
+            "male": "Masculino",
+            "female": "Femenino",
+            "other": "Otro",
+            "prefer_not_to_say": "Prefiero no decir"
+        },
+        "vo2max": "VO2max (ml/kg/min)",
+        "create_button": "Crear Cuenta",
+        "creating": "Creando Cuenta...",
+        "has_account": "¿Ya tienes una cuenta?",
+        "login_link": "Inicia Sesión"
+    },
+    "upload": {
+        "title": "Subir - Trail Fit Uploader",
+        "header": "Trail Fit Uploader",
+        "logout": "Cerrar Sesión",
+        "upload_file": "Subir Archivo .fit",
+        "drop_file": "Arrastra el archivo .fit aquí o haz clic para buscar",
+        "only_fit": "Solo se permiten archivos .fit",
+        "please_select": "Por favor selecciona un archivo",
+        "success": "Subido exitosamente",
+        "failed": "Error en la subida",
+        "session_context": "Contexto de la Sesión",
+        "session_type": "Tipo de Sesión",
+        "session_types": {
+            "select": "Seleccionar...",
+            "race": "Carrera",
+            "training": "Entrenamiento",
+            "recovery": "Recuperación"
+        },
+        "race_name": "Nombre de la Carrera (si aplica)",
+        "notes": "Notas / Observaciones",
+        "notes_placeholder": "Cualquier observación sobre esta sesión...",
+        "physiological": "Fisiológico / Subjetivo",
+        "fatigue": "Fatiga Pre-sesión (1-5)",
+        "sleep": "Calidad del Sueño (1-5)",
+        "hydration": "Estado de Hidratación",
+        "hydration_options": {
+            "select": "Seleccionar...",
+            "well_hydrated": "Bien hidratado",
+            "mildly_dehydrated": "Ligeramente deshidratado",
+            "uncertain": "Incierto"
+        },
+        "environmental": "Condiciones Ambientales",
+        "weather": "Clima",
+        "weather_options": {
+            "select": "Seleccionar...",
+            "sunny": "Soleado",
+            "cloudy": "Nublado",
+            "rain": "Lluvia",
+            "fog": "Niebla",
+            "snow": "Nieve",
+            "windy": "Ventoso"
+        },
+        "trail_conditions": "Condiciones del Sendero",
+        "trail_options": {
+            "select": "Seleccionar...",
+            "dry": "Seco",
+            "muddy": "Barroso",
+            "icy": "Helado",
+            "rocky": "Rocoso",
+            "mixed": "Mixto"
+        },
+        "upload_button": "Subir Actividad",
+        "uploading": "Subiendo...",
+        "recent_uploads": "Subidas Recientes"
+    }
+}

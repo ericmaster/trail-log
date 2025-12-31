@@ -1,0 +1,112 @@
+{
+    "app": {
+        "title": "Trail Fit",
+        "dashboard": "Dashboard",
+        "login": "Login",
+        "get_started": "Get Started",
+        "copyright": "© 2026 Trail Fit Research Project. All rights reserved."
+    },
+    "landing": {
+        "title": "Trail Fit Uploader - Trail Running Analysis",
+        "hero_title": "Master Your Trail Performance.",
+        "hero_subtitle": "Join our community research project. Contribute your trail running data to help advance sports science, and get detailed insights into your performance in return.",
+        "join_study": "Join the Study",
+        "learn_more": "Learn More",
+        "advanced_analytics": "Advanced Analytics",
+        "deep_dive": "Deep dive into your metrics",
+        "how_it_works": "How It Works",
+        "symbiotic_relationship": "A symbiotic relationship between science and sport",
+        "step1_title": "1. Upload Activity",
+        "step1_desc": "Upload your .fit files from your favorite watch. Add context like fatigue, weather, and trail conditions.",
+        "step2_title": "2. We Analyze",
+        "step2_desc": "We process your data using advanced physiological models to understand the demands of trail running.",
+        "step3_title": "3. You Improve",
+        "step3_desc": "Get immediate feedback and statistical breakdowns of your effort, helping you train smarter."
+    },
+    "login": {
+        "title": "Login",
+        "email": "Email",
+        "password": "Password",
+        "login_button": "Login",
+        "logging_in": "Logging in...",
+        "no_account": "Don't have an account?",
+        "register_link": "Register"
+    },
+    "register": {
+        "title": "Create Account",
+        "email": "Email",
+        "password": "Password",
+        "confirm_password": "Confirm Password",
+        "athlete_profile": "Athlete Profile",
+        "body_weight": "Body Weight (kg)",
+        "age": "Age",
+        "gender": "Gender",
+        "gender_options": {
+            "select": "Select...",
+            "male": "Male",
+            "female": "Female",
+            "other": "Other",
+            "prefer_not_to_say": "Prefer not to say"
+        },
+        "vo2max": "VO2max (ml/kg/min)",
+        "create_button": "Create Account",
+        "creating": "Creating Account...",
+        "has_account": "Already have an account?",
+        "login_link": "Login"
+    },
+    "upload": {
+        "title": "Upload - Trail Fit Uploader",
+        "header": "Trail Fit Uploader",
+        "logout": "Logout",
+        "upload_file": "Upload .fit File",
+        "drop_file": "Drop .fit file here or click to browse",
+        "only_fit": "Only .fit files are allowed",
+        "please_select": "Please select a file",
+        "success": "Successfully uploaded",
+        "failed": "Upload failed",
+        "session_context": "Session Context",
+        "session_type": "Session Type",
+        "session_types": {
+            "select": "Select...",
+            "race": "Race",
+            "training": "Training",
+            "recovery": "Recovery"
+        },
+        "race_name": "Race Name (if applicable)",
+        "notes": "Notes / Observations",
+        "notes_placeholder": "Any observations about this session...",
+        "physiological": "Physiological / Subjective",
+        "fatigue": "Pre-session Fatigue (1-5)",
+        "sleep": "Sleep Quality (1-5)",
+        "hydration": "Hydration Status",
+        "hydration_options": {
+            "select": "Select...",
+            "well_hydrated": "Well-hydrated",
+            "mildly_dehydrated": "Mildly dehydrated",
+            "uncertain": "Uncertain"
+        },
+        "environmental": "Environmental Conditions",
+        "weather": "Weather",
+        "weather_options": {
+            "select": "Select...",
+            "sunny": "Sunny",
+            "cloudy": "Cloudy",
+            "rain": "Rain",
+            "fog": "Fog",
+            "snow": "Snow",
+            "windy": "Windy"
+        },
+        "trail_conditions": "Trail Conditions",
+        "trail_options": {
+            "select": "Select...",
+            "dry": "Dry",
+            "muddy": "Muddy",
+            "icy": "Icy",
+            "rocky": "Rocky",
+            "mixed": "Mixed"
+        },
+        "upload_button": "Upload Activity",
+        "uploading": "Uploading...",
+        "recent_uploads": "Recent Uploads"
+    }
+}

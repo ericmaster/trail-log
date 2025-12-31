@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { api, type UploadMetadata, type UploadResponse } from "$lib/api";
+  import { t } from "svelte-i18n";
 
   let file: File | null = null;
   let sessionType = "";
@@ -50,7 +51,7 @@
       if (droppedFile.name.toLowerCase().endsWith(".fit")) {
         file = droppedFile;
       } else {
-        error = "Only .fit files are allowed";
+        error = $t("upload.only_fit");
       }
     }
   }
@@ -66,7 +67,7 @@
 
   async function handleUpload() {
     if (!file) {
-      error = "Please select a file";
+      error = $t("upload.please_select");
       return;
     }
 
@@ -87,7 +88,7 @@
       };
 
       await api.uploadFile(file, metadata);
-      success = `Successfully uploaded ${file.name}`;
+      success = `${$t("upload.success")} ${file.name}`;
 
       // Reset form
       file = null;
@@ -103,7 +104,7 @@
       // Reload uploads list
       await loadUploads();
     } catch (e) {
-      error = e instanceof Error ? e.message : "Upload failed";
+      error = e instanceof Error ? e.message : $t("upload.failed");
     } finally {
       loading = false;
     }
@@ -126,7 +127,7 @@
 </script>
 
 <svelte:head>
-  <title>Upload - Trail Fit Uploader</title>
+  <title>{$t("upload.title")}</title>
 </svelte:head>
 
 <div class="min-vh-100 py-3">
@@ -134,16 +135,16 @@
     <header
       class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3"
     >
-      <h1 class="h3 mb-0 text-white">Trail Fit Uploader</h1>
+      <h1 class="h3 mb-0 text-white">{$t("upload.header")}</h1>
       <button class="btn btn-outline-light btn-sm" on:click={handleLogout}
-        >Logout</button
+        >{$t("upload.logout")}</button
       >
     </header>
 
     <main>
       <div class="card bg-dark text-white border-secondary mb-5 shadow">
         <div class="card-body p-4">
-          <h2 class="h4 mb-4">Upload .fit File</h2>
+          <h2 class="h4 mb-4">{$t("upload.upload_file")}</h2>
 
           {#if error}
             <div class="alert alert-danger" role="alert">{error}</div>
@@ -194,32 +195,39 @@
                   class="d-flex flex-column align-items-center gap-2 text-white-50 cursor-pointer"
                 >
                   <span class="fs-1">📁</span>
-                  <span>Drop .fit file here or click to browse</span>
+                  <span>{$t("upload.drop_file")}</span>
                 </label>
               {/if}
             </div>
 
             <h5 class="border-bottom border-secondary pb-2 mb-3">
-              Session Context
+              {$t("upload.session_context")}
             </h5>
             <div class="row g-3 mb-3">
               <div class="col-md-4">
-                <label for="sessionType" class="form-label">Session Type</label>
+                <label for="sessionType" class="form-label"
+                  >{$t("upload.session_type")}</label
+                >
                 <select
                   class="form-select bg-dark text-white border-secondary"
                   id="sessionType"
                   bind:value={sessionType}
                 >
-                  <option value="">Select...</option>
-                  <option value="race">Race</option>
-                  <option value="training">Training</option>
-                  <option value="recovery">Recovery</option>
+                  <option value="">{$t("upload.session_types.select")}</option>
+                  <option value="race">{$t("upload.session_types.race")}</option
+                  >
+                  <option value="training"
+                    >{$t("upload.session_types.training")}</option
+                  >
+                  <option value="recovery"
+                    >{$t("upload.session_types.recovery")}</option
+                  >
                 </select>
               </div>
 
               <div class="col-md-8">
                 <label for="raceName" class="form-label"
-                  >Race Name (if applicable)</label
+                  >{$t("upload.race_name")}</label
                 >
                 <input
                   type="text"
@@ -232,24 +240,22 @@
             </div>
 
             <div class="mb-4">
-              <label for="notes" class="form-label">Notes / Observations</label>
+              <label for="notes" class="form-label">{$t("upload.notes")}</label>
               <textarea
                 class="form-control bg-dark text-white border-secondary"
                 id="notes"
                 bind:value={notes}
                 rows="3"
-                placeholder="Any observations about this session..."
+                placeholder={$t("upload.notes_placeholder")}
               ></textarea>
             </div>
 
             <h5 class="border-bottom border-secondary pb-2 mb-3">
-              Physiological / Subjective
+              {$t("upload.physiological")}
             </h5>
             <div class="row g-3 mb-4">
               <div class="col-md-4">
-                <label class="form-label d-block"
-                  >Pre-session Fatigue (1-5)</label
-                >
+                <label class="form-label d-block">{$t("upload.fatigue")}</label>
                 <div class="btn-group w-100" role="group">
                   {#each [1, 2, 3, 4, 5] as level}
                     <input
@@ -270,7 +276,7 @@
               </div>
 
               <div class="col-md-4">
-                <label class="form-label d-block">Sleep Quality (1-5)</label>
+                <label class="form-label d-block">{$t("upload.sleep")}</label>
                 <div class="btn-group w-100" role="group">
                   {#each [1, 2, 3, 4, 5] as level}
                     <input
@@ -291,57 +297,85 @@
 
               <div class="col-md-4">
                 <label for="hydrationStatus" class="form-label"
-                  >Hydration Status</label
+                  >{$t("upload.hydration")}</label
                 >
                 <select
                   class="form-select bg-dark text-white border-secondary"
                   id="hydrationStatus"
                   bind:value={hydrationStatus}
                 >
-                  <option value="">Select...</option>
-                  <option value="well_hydrated">Well-hydrated</option>
-                  <option value="mildly_dehydrated">Mildly dehydrated</option>
-                  <option value="uncertain">Uncertain</option>
+                  <option value=""
+                    >{$t("upload.hydration_options.select")}</option
+                  >
+                  <option value="well_hydrated"
+                    >{$t("upload.hydration_options.well_hydrated")}</option
+                  >
+                  <option value="mildly_dehydrated"
+                    >{$t("upload.hydration_options.mildly_dehydrated")}</option
+                  >
+                  <option value="uncertain"
+                    >{$t("upload.hydration_options.uncertain")}</option
+                  >
                 </select>
               </div>
             </div>
 
             <h5 class="border-bottom border-secondary pb-2 mb-3">
-              Environmental Conditions
+              {$t("upload.environmental")}
             </h5>
             <div class="row g-3 mb-4">
               <div class="col-md-6">
-                <label for="weatherCondition" class="form-label">Weather</label>
+                <label for="weatherCondition" class="form-label"
+                  >{$t("upload.weather")}</label
+                >
                 <select
                   class="form-select bg-dark text-white border-secondary"
                   id="weatherCondition"
                   bind:value={weatherCondition}
                 >
-                  <option value="">Select...</option>
-                  <option value="sunny">Sunny</option>
-                  <option value="cloudy">Cloudy</option>
-                  <option value="rain">Rain</option>
-                  <option value="fog">Fog</option>
-                  <option value="snow">Snow</option>
-                  <option value="windy">Windy</option>
+                  <option value="">{$t("upload.weather_options.select")}</option
+                  >
+                  <option value="sunny"
+                    >{$t("upload.weather_options.sunny")}</option
+                  >
+                  <option value="cloudy"
+                    >{$t("upload.weather_options.cloudy")}</option
+                  >
+                  <option value="rain"
+                    >{$t("upload.weather_options.rain")}</option
+                  >
+                  <option value="fog">{$t("upload.weather_options.fog")}</option
+                  >
+                  <option value="snow"
+                    >{$t("upload.weather_options.snow")}</option
+                  >
+                  <option value="windy"
+                    >{$t("upload.weather_options.windy")}</option
+                  >
                 </select>
               </div>
 
               <div class="col-md-6">
                 <label for="trailCondition" class="form-label"
-                  >Trail Conditions</label
+                  >{$t("upload.trail_conditions")}</label
                 >
                 <select
                   class="form-select bg-dark text-white border-secondary"
                   id="trailCondition"
                   bind:value={trailCondition}
                 >
-                  <option value="">Select...</option>
-                  <option value="dry">Dry</option>
-                  <option value="muddy">Muddy</option>
-                  <option value="icy">Icy</option>
-                  <option value="rocky">Rocky</option>
-                  <option value="mixed">Mixed</option>
+                  <option value="">{$t("upload.trail_options.select")}</option>
+                  <option value="dry">{$t("upload.trail_options.dry")}</option>
+                  <option value="muddy"
+                    >{$t("upload.trail_options.muddy")}</option
+                  >
+                  <option value="icy">{$t("upload.trail_options.icy")}</option>
+                  <option value="rocky"
+                    >{$t("upload.trail_options.rocky")}</option
+                  >
+                  <option value="mixed"
+                    >{$t("upload.trail_options.mixed")}</option
+                  >
                 </select>
               </div>
             </div>
@@ -351,7 +385,7 @@
               class="btn btn-primary w-100 py-2 fw-bold"
               disabled={loading || !file}
             >
-              {loading ? "Uploading..." : "Upload Activity"}
+              {loading ? $t("upload.uploading") : $t("upload.upload_button")}
             </button>
           </form>
         </div>
@@ -360,7 +394,7 @@
       {#if uploads.length > 0}
         <div class="card bg-dark text-white border-secondary shadow">
           <div class="card-header border-secondary bg-transparent py-3">
-            <h2 class="h5 mb-0">Recent Uploads</h2>
+            <h2 class="h5 mb-0">{$t("upload.recent_uploads")}</h2>
           </div>
           <div class="list-group list-group-flush">
             {#each uploads as upload}

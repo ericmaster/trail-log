@@ -1,6 +1,7 @@
 <script lang="ts">
   import { api } from "$lib/api";
   import { onMount } from "svelte";
+  import { t, locale } from "svelte-i18n";
 
   let isAuthenticated = false;
 
@@ -10,21 +11,47 @@
 </script>
 
 <svelte:head>
-  <title>Trail Fit Uploader - Trail Running Analysis</title>
+  <title>{$t("landing.title")}</title>
 </svelte:head>
 
 <div class="min-vh-100 d-flex flex-column">
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-transparent pt-4">
     <div class="container">
-      <a class="navbar-brand fw-bold fs-3" href="/">Trail Fit</a>
+      <a class="navbar-brand fw-bold fs-3" href="/">{$t("app.title")}</a>
       <div class="d-flex gap-3">
         {#if isAuthenticated}
-          <a href="/upload" class="btn btn-outline-light">Dashboard</a>
+          <a href="/upload" class="btn btn-outline-light"
+            >{$t("app.dashboard")}</a
+          >
         {:else}
-          <a href="/login" class="btn btn-outline-light">Login</a>
-          <a href="/register" class="btn btn-primary">Get Started</a>
+          <a href="/login" class="btn btn-outline-light">{$t("app.login")}</a>
+          <a href="/register" class="btn btn-primary">{$t("app.get_started")}</a
+          >
         {/if}
+        <!-- Language Switcher -->
+        <div class="dropdown">
+          <button
+            class="btn btn-outline-light dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            🌍 {$locale?.toUpperCase()}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+            <li>
+              <button class="dropdown-item" onclick={() => ($locale = "en")}
+                >English</button
+              >
+            </li>
+            <li>
+              <button class="dropdown-item" onclick={() => ($locale = "es")}
+                >Español</button
+              >
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
@@ -35,12 +62,10 @@
       <div class="row align-items-center py-5">
         <div class="col-lg-7 text-center text-lg-start mb-5 mb-lg-0">
           <h1 class="display-3 fw-bold mb-4 bg-gradient-text">
-            Master Your Trail Performance.
+            {$t("landing.hero_title")}
           </h1>
           <p class="lead text-light opacity-75 mb-5 fs-4">
-            Join our community research project. Contribute your trail running
-            data to help advance sports science, and get detailed insights into
-            your performance in return.
+            {$t("landing.hero_subtitle")}
           </p>
           <div
             class="d-flex gap-3 justify-content-center justify-content-lg-start"
@@ -48,11 +73,12 @@
             <a
               href="/register"
               class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-lg"
-              >Join the Study</a
+              >{$t("landing.join_study")}</a
             >
             <a
               href="#how-it-works"
-              class="btn btn-outline-light btn-lg px-5 py-3">Learn More</a
+              class="btn btn-outline-light btn-lg px-5 py-3"
+              >{$t("landing.learn_more")}</a
             >
           </div>
         </div>
@@ -66,10 +92,8 @@
                   <span class="fs-4">📊</span>
                 </div>
                 <div>
-                  <h5 class="mb-1">Advanced Analytics</h5>
-                  <small class="text-white-50"
-                    >Deep dive into your metrics</small
-                  >
+                  <h5 class="mb-1">{$t("landing.advanced_analytics")}</h5>
+                  <small class="text-white-50">{$t("landing.deep_dive")}</small>
                 </div>
               </div>
 
@@ -107,9 +131,9 @@
   <section id="how-it-works" class="py-5 bg-dark bg-opacity-25">
     <div class="container py-5">
       <div class="text-center mb-5">
-        <h2 class="fw-bold mb-3">How It Works</h2>
+        <h2 class="fw-bold mb-3">{$t("landing.how_it_works")}</h2>
         <p class="text-white-50">
-          A symbiotic relationship between science and sport
+          {$t("landing.symbiotic_relationship")}
         </p>
       </div>
 
@@ -119,10 +143,9 @@
             class="h-100 p-4 rounded-4 border border-secondary border-opacity-25 bg-gradient-dark"
           >
             <div class="display-5 mb-3">📂</div>
-            <h3 class="h4 mb-3">1. Upload Activity</h3>
+            <h3 class="h4 mb-3">{$t("landing.step1_title")}</h3>
             <p class="text-white-50">
-              Upload your .fit files from your favorite watch. Add context like
-              fatigue, weather, and trail conditions.
+              {$t("landing.step1_desc")}
             </p>
           </div>
         </div>
@@ -131,10 +154,9 @@
             class="h-100 p-4 rounded-4 border border-secondary border-opacity-25 bg-gradient-dark"
           >
             <div class="display-5 mb-3">🔬</div>
-            <h3 class="h4 mb-3">2. We Analyze</h3>
+            <h3 class="h4 mb-3">{$t("landing.step2_title")}</h3>
             <p class="text-white-50">
-              We process your data using advanced physiological models to
-              understand the demands of trail running.
+              {$t("landing.step2_desc")}
             </p>
           </div>
         </div>
@@ -143,10 +165,9 @@
             class="h-100 p-4 rounded-4 border border-secondary border-opacity-25 bg-gradient-dark"
           >
             <div class="display-5 mb-3">📈</div>
-            <h3 class="h4 mb-3">3. You Improve</h3>
+            <h3 class="h4 mb-3">{$t("landing.step3_title")}</h3>
             <p class="text-white-50">
-              Get immediate feedback and statistical breakdowns of your effort,
-              helping you train smarter.
+              {$t("landing.step3_desc")}
             </p>
           </div>
         </div>
@@ -158,7 +179,7 @@
   <footer class="py-4 border-top border-secondary border-opacity-25 mt-auto">
     <div class="container text-center text-white-50 small">
       <p class="mb-0">
-        &copy; 2024 Trail Fit Research Project. All rights reserved.
+        {$t("app.copyright")}
       </p>
     </div>
   </footer>
