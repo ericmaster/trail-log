@@ -6,7 +6,6 @@
 
     onMount(async () => {
         // Dynamically import bootstrap to avoid SSR issues
-        // @ts-ignore
         const bootstrap = await import(
             "bootstrap/dist/js/bootstrap.bundle.min.js"
         );

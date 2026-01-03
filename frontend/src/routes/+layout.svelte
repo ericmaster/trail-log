@@ -1,6 +1,8 @@
 <script lang="ts">
-	import favicon from "$lib/assets/favicon.svg";
+	import favicon from "$lib/assets/trail-log-logo.svg";
 	import "bootstrap/dist/css/bootstrap.min.css";
+	import Navbar from "$lib/components/Navbar.svelte";
+	import Footer from "$lib/components/Footer.svelte";
 
 	import { onMount } from "svelte";
 	import "$lib/i18n"; // Initialize i18n
@@ -28,7 +30,9 @@
 		</div>
 	</div>
 {:else}
+	<Navbar />
 	{@render children()}
+	<Footer />
 {/if}
 
 <style>

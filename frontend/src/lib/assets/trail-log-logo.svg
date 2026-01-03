@@ -1,0 +1,16 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Mountain -->
+  <path d="M30 130 L100 30 L170 130 H30Z" fill="#546E7A"/>
+  
+  <!-- Foreground Mountain (smaller, offset) -->
+  <path d="M100 130 L150 60 L200 130 H100Z" fill="#78909C"/>
+
+  <!-- Winding Trail -->
+  <path d="M95 130 
+           C 95 130, 70 150, 90 170 
+           C 110 190, 80 200, 70 200 
+           H 130 
+           C 120 200, 150 180, 110 160 
+           C 90 150, 105 130, 105 130 H 95 Z" 
+        fill="#2E7D32"/>
+</svg>

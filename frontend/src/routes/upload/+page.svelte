@@ -3,7 +3,6 @@
   import { goto } from "$app/navigation";
   import { api, type UploadMetadata, type UploadResponse } from "$lib/api";
   import { t } from "svelte-i18n";
-  import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
   import InfoTooltip from "$lib/components/InfoTooltip.svelte";
 
   let file: File | null = null;
@@ -115,11 +114,6 @@
     }
   }
 
-  function handleLogout() {
-    api.logout();
-    goto("/login");
-  }
-
   function formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString("en-US", {
       year: "numeric",
@@ -137,16 +131,8 @@
 
 <div class="min-vh-100 py-3">
   <div class="container" style="max-width: 900px;">
-    <header
-      class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3"
-    >
+    <header class="mb-4 border-bottom border-secondary pb-3">
       <h1 class="h3 mb-0 text-white">{$t("upload.header")}</h1>
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-outline-light btn-sm" on:click={handleLogout}
-          >{$t("upload.logout")}</button
-        >
-        <LanguageSwitcher />
-      </div>
     </header>
 
     <main>

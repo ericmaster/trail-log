@@ -2,7 +2,6 @@
   import { goto } from "$app/navigation";
   import { api, type RegisterData } from "$lib/api";
   import { t } from "svelte-i18n";
-  import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
 
   let email = "";
 
@@ -46,10 +45,6 @@
 <svelte:head>
   <title>{$t("register.title")} - {$t("app.title")}</title>
 </svelte:head>
-
-<div class="fixed-top p-3 d-flex justify-content-end">
-  <LanguageSwitcher />
-</div>
 
 <div
   class="container d-flex align-items-center justify-content-center min-vh-100 py-5"

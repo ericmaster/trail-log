@@ -1,14 +1,5 @@
 <script lang="ts">
-  import { api } from "$lib/api";
-  import { onMount } from "svelte";
-  import { t, locale } from "svelte-i18n";
-  import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
-
-  let isAuthenticated = false;
-
-  onMount(() => {
-    isAuthenticated = api.isAuthenticated();
-  });
+  import { t } from "svelte-i18n";
 </script>
 
 <svelte:head>
@@ -16,25 +7,6 @@
 </svelte:head>
 
 <div class="min-vh-100 d-flex flex-column">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-transparent pt-4">
-    <div class="container">
-      <a class="navbar-brand fw-bold fs-3" href="/">{$t("app.title")}</a>
-      <div class="d-flex gap-3">
-        {#if isAuthenticated}
-          <a href="/upload" class="btn btn-outline-light"
-            >{$t("app.dashboard")}</a
-          >
-        {:else}
-          <a href="/login" class="btn btn-outline-light">{$t("app.login")}</a>
-          <a href="/register" class="btn btn-primary">{$t("app.get_started")}</a
-          >
-        {/if}
-        <LanguageSwitcher />
-      </div>
-    </div>
-  </nav>
-
   <!-- Hero Section -->
   <main class="flex-grow-1 d-flex align-items-center">
     <div class="container">
@@ -153,15 +125,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Footer -->
-  <footer class="py-4 border-top border-secondary border-opacity-25 mt-auto">
-    <div class="container text-center text-white-50 small">
-      <p class="mb-0">
-        {$t("app.copyright")}
-      </p>
-    </div>
-  </footer>
 </div>
 
 <style>

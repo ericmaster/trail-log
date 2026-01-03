@@ -42,5 +42,6 @@ Trail Fit Uploader is a full-stack web application designed to collect and analy
 - **API**: Ensure modifying `models.py`, `schemas.py`, and the router (e.g., `routers/uploads.py`) in sync when adding new fields.
 - **Frontend**:
   - Use `svelte-i18n` for all text (`$t("key")`).
+  - **CRITICAL**: Ensure every page, component, and feature supports BOTH English (EN) and Spanish (ES) from the start. Update `en.json` and `es.json` for every new text element.
   - Use Bootstrap classes for styling.
   - Update `src/lib/api.ts` interfaces when backend types change.
