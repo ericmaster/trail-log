@@ -83,6 +83,7 @@ class UploadMetadata(BaseModel):
     race_name: Optional[str] = None
     notes: Optional[str] = None
     fatigue_level: Optional[int] = Field(None, ge=1, le=5)
+    general_sensation: Optional[int] = Field(None, ge=1, le=5)
     sleep_quality: Optional[int] = Field(None, ge=1, le=5)
     hydration_status: Optional[HydrationStatusEnum] = None
     weather_condition: Optional[WeatherConditionEnum] = None
@@ -98,6 +99,7 @@ class UploadResponse(BaseModel):
     race_name: Optional[str] = None
     notes: Optional[str] = None
     fatigue_level: Optional[int] = None
+    general_sensation: Optional[int] = None
     sleep_quality: Optional[int] = None
     hydration_status: Optional[HydrationStatusEnum] = None
     weather_condition: Optional[WeatherConditionEnum] = None

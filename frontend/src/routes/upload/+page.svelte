@@ -3,12 +3,15 @@
   import { goto } from "$app/navigation";
   import { api, type UploadMetadata, type UploadResponse } from "$lib/api";
   import { t } from "svelte-i18n";
+  import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
+  import InfoTooltip from "$lib/components/InfoTooltip.svelte";
 
   let file: File | null = null;
   let sessionType = "";
   let raceName = "";
   let notes = "";
   let fatigueLevel: number | undefined;
+  let generalSensation: number | undefined;
   let sleepQuality: number | undefined;
   let hydrationStatus = "";
   let weatherCondition = "";
@@ -81,6 +84,7 @@
         race_name: raceName || undefined,
         notes: notes || undefined,
         fatigue_level: fatigueLevel,
+        general_sensation: generalSensation,
         sleep_quality: sleepQuality,
         hydration_status: hydrationStatus || undefined,
         weather_condition: weatherCondition || undefined,
@@ -96,6 +100,7 @@
       raceName = "";
       notes = "";
       fatigueLevel = undefined;
+      generalSensation = undefined;
       sleepQuality = undefined;
       hydrationStatus = "";
       weatherCondition = "";
@@ -136,9 +141,12 @@
       class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3"
     >
       <h1 class="h3 mb-0 text-white">{$t("upload.header")}</h1>
-      <button class="btn btn-outline-light btn-sm" on:click={handleLogout}
-        >{$t("upload.logout")}</button
-      >
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-light btn-sm" on:click={handleLogout}
+          >{$t("upload.logout")}</button
+        >
+        <LanguageSwitcher />
+      </div>
     </header>
 
     <main>
@@ -253,10 +261,15 @@
             <h5 class="border-bottom border-secondary pb-2 mb-3">
               {$t("upload.physiological")}
             </h5>
+
+            <h6 class="text-white-50 mb-3">{$t("upload.pre_session")}</h6>
             <div class="row g-3 mb-4">
               <div class="col-md-4">
-                <div class="form-label d-block text-white-50">
-                  {$t("upload.fatigue")}
+                <div class="d-flex align-items-center mb-2">
+                  <div class="form-label mb-0 text-white-50">
+                    {$t("upload.fatigue")}
+                  </div>
+                  <InfoTooltip text={$t("upload.fatigue_desc")} />
                 </div>
                 <div class="btn-group w-100" role="group">
                   {#each [1, 2, 3, 4, 5] as level}
@@ -278,8 +291,11 @@
               </div>
 
               <div class="col-md-4">
-                <div class="form-label d-block text-white-50">
-                  {$t("upload.sleep")}
+                <div class="d-flex align-items-center mb-2">
+                  <div class="form-label mb-0 text-white-50">
+                    {$t("upload.sleep")}
+                  </div>
+                  <InfoTooltip text={$t("upload.sleep_desc")} />
                 </div>
                 <div class="btn-group w-100" role="group">
                   {#each [1, 2, 3, 4, 5] as level}
@@ -300,9 +316,12 @@
               </div>
 
               <div class="col-md-4">
-                <label for="hydrationStatus" class="form-label"
-                  >{$t("upload.hydration")}</label
-                >
+                <div class="d-flex align-items-center mb-2">
+                  <label for="hydrationStatus" class="form-label mb-0"
+                    >{$t("upload.hydration")}</label
+                  >
+                  <InfoTooltip text={$t("upload.hydration_desc")} />
+                </div>
                 <select
                   class="form-select bg-dark text-white border-secondary"
                   id="hydrationStatus"
@@ -324,14 +343,46 @@
               </div>
             </div>
 
+            <h6 class="text-white-50 mb-3 mt-4">{$t("upload.post_session")}</h6>
+            <div class="row g-3 mb-4">
+              <div class="col-md-4">
+                <div class="d-flex align-items-center mb-2">
+                  <div class="form-label mb-0 text-white-50">
+                    {$t("upload.general_sensation")}
+                  </div>
+                  <InfoTooltip text={$t("upload.general_sensation_desc")} />
+                </div>
+                <div class="btn-group w-100" role="group">
+                  {#each [1, 2, 3, 4, 5] as level}
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      name="generalSensation"
+                      id="generalSensation{level}"
+                      autocomplete="off"
+                      checked={generalSensation === level}
+                      on:change={() => (generalSensation = level)}
+                    />
+                    <label
+                      class="btn btn-outline-secondary"
+                      for="generalSensation{level}">{level}</label
+                    >
+                  {/each}
+                </div>
+              </div>
+            </div>
+
             <h5 class="border-bottom border-secondary pb-2 mb-3">
               {$t("upload.environmental")}
             </h5>
             <div class="row g-3 mb-4">
               <div class="col-md-6">
-                <label for="weatherCondition" class="form-label"
-                  >{$t("upload.weather")}</label
-                >
+                <div class="d-flex align-items-center mb-2">
+                  <label for="weatherCondition" class="form-label mb-0"
+                    >{$t("upload.weather")}</label
+                  >
+                  <InfoTooltip text={$t("upload.weather_desc")} />
+                </div>
                 <select
                   class="form-select bg-dark text-white border-secondary"
                   id="weatherCondition"
@@ -360,9 +411,12 @@
               </div>
 
               <div class="col-md-6">
-                <label for="trailCondition" class="form-label"
-                  >{$t("upload.trail_conditions")}</label
-                >
+                <div class="d-flex align-items-center mb-2">
+                  <label for="trailCondition" class="form-label mb-0"
+                    >{$t("upload.trail_conditions")}</label
+                  >
+                  <InfoTooltip text={$t("upload.trail_desc")} />
+                </div>
                 <select
                   class="form-select bg-dark text-white border-secondary"
                   id="trailCondition"
@@ -428,11 +482,6 @@
 </div>
 
 <style>
-  :global(body) {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    min-height: 100vh;
-  }
-
   .form-control:focus,
   .form-select:focus {
     background-color: #212529;

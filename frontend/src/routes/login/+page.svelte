@@ -2,8 +2,10 @@
   import { goto } from "$app/navigation";
   import { api } from "$lib/api";
   import { t } from "svelte-i18n";
+  import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
 
   let email = "";
+
   let password = "";
   let error = "";
   let loading = false;
@@ -25,6 +27,10 @@
 <svelte:head>
   <title>{$t("login.title")} - {$t("app.title")}</title>
 </svelte:head>
+
+<div class="fixed-top p-3 d-flex justify-content-end">
+  <LanguageSwitcher />
+</div>
 
 <div
   class="container d-flex align-items-center justify-content-center min-vh-100"
@@ -85,12 +91,8 @@
 </div>
 
 <style>
-  :global(body) {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    min-height: 100vh;
-  }
-
   /* Override bootstrap focus to match theme */
+
   .form-control:focus {
     background-color: #212529;
     color: #fff;

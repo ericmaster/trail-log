@@ -72,6 +72,7 @@ class Upload(Base):
 
     # Physiological/Subjective
     fatigue_level = Column(Integer, nullable=True)  # 1-5
+    general_sensation = Column(Integer, nullable=True)  # 1-5
     sleep_quality = Column(Integer, nullable=True)  # 1-5
     hydration_status = Column(SQLEnum(HydrationStatusEnum), nullable=True)
 

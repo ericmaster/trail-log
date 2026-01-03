@@ -75,10 +75,17 @@
         "race_name": "Race Name (if applicable)",
         "notes": "Notes / Observations",
         "notes_placeholder": "Any observations about this session...",
-        "physiological": "Physiological / Subjective",
+        "physiological": "Physiological / Subjective Context",
+        "pre_session": "Pre-Session",
+        "post_session": "Post-Session",
         "fatigue": "Pre-session Fatigue (1-5)",
-        "sleep": "Sleep Quality (1-5)",
+        "fatigue_desc": "1: High accumulated fatigue (Not recommended)<br>2: High fatigue but manageable<br>3: Somewhat fatigued but fit to train<br>4: Slight discomfort<br>5: Fully recovered",
+        "general_sensation": "General Sensation (1-5)",
+        "general_sensation_desc": "1: Very bad<br>2: Bad<br>3: Normal<br>4: Good<br>5: Very good",
+        "sleep": "Sleep Quality (Last Night) (1-5)",
+        "sleep_desc": "1: Very bad<br>2: Bad<br>3: Normal<br>4: Good<br>5: Very good",
         "hydration": "Hydration Status",
+        "hydration_desc": "If unsure, select 'Uncertain'. Starting activity dehydrated is not recommended.",
         "hydration_options": {
             "select": "Select...",
             "well_hydrated": "Well-hydrated",
@@ -87,6 +94,7 @@
         },
         "environmental": "Environmental Conditions",
         "weather": "Weather",
+        "weather_desc": "Select the predominant weather condition during the activity",
         "weather_options": {
             "select": "Select...",
             "sunny": "Sunny",
@@ -97,6 +105,7 @@
             "windy": "Windy"
         },
         "trail_conditions": "Trail Conditions",
+        "trail_desc": "Select the predominant trail condition during the activity",
         "trail_options": {
             "select": "Select...",
             "dry": "Dry",

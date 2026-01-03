@@ -75,10 +75,17 @@
         "race_name": "Nombre de la Carrera (si aplica)",
         "notes": "Notas / Observaciones",
         "notes_placeholder": "Cualquier observación sobre esta sesión...",
-        "physiological": "Fisiológico / Subjetivo",
+        "physiological": "Contexto Fisiológico / Subjetivo",
+        "pre_session": "Pre-Sesión",
+        "post_session": "Post-Sesión",
         "fatigue": "Fatiga Pre-sesión (1-5)",
-        "sleep": "Calidad del Sueño (1-5)",
+        "fatigue_desc": "1: Con mucha fatiga acumulada (No recomendado)<br>2: Con mucha fatiga pero manejable<br>3: Algo fatigado pero con condición para entrenar<br>4: Con ligeras molestias<br>5: Totalmente recuperado",
+        "general_sensation": "Sensación General (1-5)",
+        "general_sensation_desc": "1: Muy mal<br>2: Mal<br>3: Normal<br>4: Bien<br>5: Muy bien",
+        "sleep": "Calidad del Sueño (Noche Anterior) (1-5)",
+        "sleep_desc": "1: Muy mal<br>2: Mal<br>3: Normal<br>4: Bien<br>5: Muy bien",
         "hydration": "Estado de Hidratación",
+        "hydration_desc": "Si no estás seguro, marca 'Incierto'. No se recomienda iniciar deshidratado.",
         "hydration_options": {
             "select": "Seleccionar...",
             "well_hydrated": "Bien hidratado",
@@ -87,6 +94,7 @@
         },
         "environmental": "Condiciones Ambientales",
         "weather": "Clima",
+        "weather_desc": "Selecciona la condición climática predominante durante la actividad",
         "weather_options": {
             "select": "Seleccionar...",
             "sunny": "Soleado",
@@ -97,6 +105,7 @@
             "windy": "Ventoso"
         },
         "trail_conditions": "Condiciones del Sendero",
+        "trail_desc": "Selecciona la condición del sendero predominante durante la actividad",
         "trail_options": {
             "select": "Seleccionar...",
             "dry": "Seco",

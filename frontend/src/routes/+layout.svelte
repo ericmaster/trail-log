@@ -30,3 +30,21 @@
 {:else}
 	{@render children()}
 {/if}
+
+<style>
+	:global(body) {
+		background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+		color: #fff;
+		min-height: 100vh;
+		overflow-x: hidden;
+	}
+
+	:global(h1, h2, h3, h4, h5, h6) {
+		color: #fff !important;
+	}
+
+	/* Force white color for elements within cards if they are on a dark bg */
+	:global(.bg-dark) {
+		color: #fff !important;
+	}
+</style>

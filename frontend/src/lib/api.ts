@@ -34,6 +34,7 @@ interface UploadMetadata {
     race_name?: string;
     notes?: string;
     fatigue_level?: number;
+    general_sensation?: number;
     sleep_quality?: number;
     hydration_status?: string;
     weather_condition?: string;
@@ -49,6 +50,7 @@ interface UploadResponse {
     race_name?: string;
     notes?: string;
     fatigue_level?: number;
+    general_sensation?: number;
     sleep_quality?: number;
     hydration_status?: string;
     weather_condition?: string;

@@ -2,6 +2,7 @@
   import { api } from "$lib/api";
   import { onMount } from "svelte";
   import { t, locale } from "svelte-i18n";
+  import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
 
   let isAuthenticated = false;
 
@@ -29,29 +30,7 @@
           <a href="/register" class="btn btn-primary">{$t("app.get_started")}</a
           >
         {/if}
-        <!-- Language Switcher -->
-        <div class="dropdown">
-          <button
-            class="btn btn-outline-light dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            🌍 {$locale?.toUpperCase()}
-          </button>
-          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-            <li>
-              <button class="dropdown-item" onclick={() => ($locale = "en")}
-                >English</button
-              >
-            </li>
-            <li>
-              <button class="dropdown-item" onclick={() => ($locale = "es")}
-                >Español</button
-              >
-            </li>
-          </ul>
-        </div>
+        <LanguageSwitcher />
       </div>
     </div>
   </nav>
@@ -186,12 +165,6 @@
 </div>
 
 <style>
-  :global(body) {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: #fff;
-    overflow-x: hidden;
-  }
-
   .bg-gradient-text {
     background: linear-gradient(to right, #fff 0%, #a5b4fc 100%);
     -webkit-background-clip: text;
