@@ -4,15 +4,19 @@
 
 <div class="dropdown">
     <button
-        class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2 border-secondary border-opacity-50"
+        class="btn btn-outline-light d-flex align-items-center justify-content-center gap-2 border-secondary border-opacity-50 lang-btn"
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
     >
-        <span class="fs-5">
-            {$locale === "es" ? "🇪🇸" : "🇺🇸"}
-        </span>
-        <span class="fw-medium text-uppercase">{$locale}</span>
+        <img
+            src="https://flagcdn.com/{$locale === 'es' ? 'es' : 'us'}.svg"
+            alt={$locale === "es" ? "ES" : "US"}
+            class="flag-icon rounded-1 shadow-sm"
+        />
+        <span class="fw-medium text-uppercase lang-label"
+            >{$locale === "es" ? "es" : "en"}</span
+        >
     </button>
     <ul
         class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-lg border-secondary border-opacity-25"
@@ -23,7 +27,11 @@
                 class:active={$locale === "en"}
                 onclick={() => ($locale = "en")}
             >
-                <span class="fs-5">🇺🇸</span>
+                <img
+                    src="https://flagcdn.com/us.svg"
+                    alt="US"
+                    class="flag-icon rounded-1 shadow-sm"
+                />
                 <span>English</span>
             </button>
         </li>
@@ -33,7 +41,11 @@
                 class:active={$locale === "es"}
                 onclick={() => ($locale = "es")}
             >
-                <span class="fs-5">🇪🇸</span>
+                <img
+                    src="https://flagcdn.com/es.svg"
+                    alt="ES"
+                    class="flag-icon rounded-1 shadow-sm"
+                />
                 <span>Español</span>
             </button>
         </li>
@@ -41,11 +53,23 @@
 </div>
 
 <style>
+    .lang-btn {
+        width: 72px;
+    }
+
+    .lang-label {
+        width: 20px;
+        text-align: left;
+    }
+
+    .flag-icon {
+        width: 20px;
+        height: 14px;
+        object-fit: cover;
+    }
+
     .dropdown-item.active {
         background-color: rgba(13, 110, 253, 0.25);
         color: #fff;
-    }
-    .dropdown-toggle::after {
-        vertical-align: middle;
     }
 </style>
