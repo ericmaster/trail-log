@@ -2,12 +2,14 @@ import { spawn } from 'child_process';
 import { writeFile } from 'fs/promises';
 import { randomBytes } from 'crypto';
 
-const {
-    CLOUDFLARE_API_TOKEN,
-    CLOUDFLARE_DOMAIN,
-    CLOUDFLARE_TUNNEL_NAME,
-    CLOUDFLARE_ACCOUNT_ID
-} = process.env;
+const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN?.trim();
+const CLOUDFLARE_DOMAIN = process.env.CLOUDFLARE_DOMAIN?.trim();
+const CLOUDFLARE_TUNNEL_NAME = process.env.CLOUDFLARE_TUNNEL_NAME?.trim();
+const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID?.trim();
+
+if (CLOUDFLARE_API_TOKEN) {
+    console.log(`Token provided (Length: ${CLOUDFLARE_API_TOKEN.length}, Starts with: ${CLOUDFLARE_API_TOKEN.substring(0, 4)}...)`);
+}
 
 if (!CLOUDFLARE_API_TOKEN || !CLOUDFLARE_DOMAIN || !CLOUDFLARE_TUNNEL_NAME) {
     console.error('Missing required environment variables: CLOUDFLARE_API_TOKEN, CLOUDFLARE_DOMAIN, CLOUDFLARE_TUNNEL_NAME');
