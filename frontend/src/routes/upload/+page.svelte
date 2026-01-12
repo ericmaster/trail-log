@@ -136,6 +136,29 @@
     </header>
 
     <main>
+      <!-- Data Collection Info -->
+      <div
+        class="alert alert-info border-info bg-dark text-white mb-4 shadow-sm"
+      >
+        <div class="d-flex align-items-start gap-3">
+          <span class="fs-4">ℹ️</span>
+          <div class="flex-grow-1">
+            <h3 class="h6 mb-2 fw-bold">
+              {$t("data_collection.title")}
+            </h3>
+            <p class="mb-2 small">
+              {$t("data_collection.brief")}
+            </p>
+            <a
+              href="/data-collection"
+              class="btn btn-sm btn-outline-info text-white"
+            >
+              {$t("data_collection.full_protocol_link")} →
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div class="card bg-dark text-white border-secondary mb-5 shadow">
         <div class="card-body p-4">
           <h2 class="h4 mb-4">{$t("upload.upload_file")}</h2>
@@ -496,5 +519,19 @@
 
   .cursor-pointer {
     cursor: pointer;
+  }
+
+  .alert-info {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+    border-color: rgba(13, 110, 253, 0.3) !important;
+  }
+
+  .btn-outline-info {
+    border-color: #0dcaf0;
+  }
+
+  .btn-outline-info:hover {
+    background-color: #0dcaf0;
+    color: #000;
   }
 </style>

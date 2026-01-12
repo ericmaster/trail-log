@@ -119,18 +119,10 @@
         "uploading": "Uploading...",
         "recent_uploads": "Recent Uploads"
     },
-    "privacy_policy_page": {
-        "last_updated": "Last updated: January 2026",
-        "section1_title": "1. Information We Collect",
-        "section1_content": "We collect the data you explicitly provide to us when you upload your activity files (.fit files) and the associated metadata (e.g., fatigue levels, weather conditions). This includes:",
-        "section1_list1": "Account information (email, height, weight, etc.)",
-        "section1_list2": "Activity data (GPS, heart rate, pace, cadence, etc.)",
-        "section1_list3": "Subjective feelings and environmental observations",
-        "section2_title": "2. How We Use Your Data",
-        "section2_content": "Your data is used for the Trail Fit Research Project to understand the physiological demands of trail running. We may aggregate your data with other users to publish scientific findings.",
-        "section3_title": "3. Data Security",
-        "section3_content": "We implement appropriate security measures to protect against unauthorized access to or unauthorized alteration, disclosure, or destruction of data.",
-        "section4_title": "4. Contact Us",
-        "section4_content": "If you have any questions about this Privacy Policy, please contact us at research@trailfit.io."
+    "data_collection": {
+        "title": "Data Collection Protocol",
+        "page_title": "Data Collection Protocol - Trail Fit",
+        "brief": "Learn how to collect data during your activities using the Nutrition Logger app for Garmin devices.",
+        "full_protocol_link": "View Full Data Collection Protocol"
     }
 }

@@ -1,4 +1,8 @@
+import { writable } from 'svelte/store';
+
 const API_BASE = '/api';
+
+export const authState = writable(false);
 
 interface LoginCredentials {
     username: string;
@@ -63,6 +67,7 @@ class ApiClient {
     constructor() {
         if (typeof window !== 'undefined') {
             this.token = localStorage.getItem('token');
+            authState.set(!!this.token);
         }
     }
 
@@ -71,6 +76,7 @@ class ApiClient {
         if (typeof window !== 'undefined') {
             localStorage.setItem('token', token);
         }
+        authState.set(true);
     }
 
     clearToken() {
@@ -78,6 +84,7 @@ class ApiClient {
         if (typeof window !== 'undefined') {
             localStorage.removeItem('token');
         }
+        authState.set(false);
     }
 
     getToken(): string | null {

@@ -1,20 +1,12 @@
 <script lang="ts">
     import { t } from "svelte-i18n";
-    import { api } from "$lib/api";
-    import { onMount } from "svelte";
+    import { api, authState } from "$lib/api";
     import { goto } from "$app/navigation";
     import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
     import logo from "$lib/assets/trail-log-logo.svg";
 
-    let isAuthenticated = false;
-
-    onMount(() => {
-        isAuthenticated = api.isAuthenticated();
-    });
-
     function handleLogout() {
         api.logout();
-        isAuthenticated = false;
         goto("/login");
     }
 </script>
@@ -35,7 +27,7 @@
             {$t("app.title")}
         </a>
         <div class="d-flex gap-3 align-items-center">
-            {#if isAuthenticated}
+            {#if $authState}
                 <a href="/upload" class="btn btn-outline-light"
                     >{$t("app.dashboard")}</a
                 >
