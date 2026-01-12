@@ -27,6 +27,8 @@ async function fetchAPI(endpoint, options = {}) {
     const res = await fetch(url, { ...options, headers: { ...HEADERS, ...options.headers } });
     const data = await res.json();
     if (!data.success) {
+        console.error(`FAILED REQUEST: ${endpoint}`);
+        console.error(`Full URL: ${url}`);
         throw new Error(`Cloudflare API Error: ${JSON.stringify(data.errors)}`);
     }
     return data.result;
@@ -38,7 +40,14 @@ async function getAccountId() {
     // Strategy 1: List Accounts (Requires Account:Read)
     try {
         const accounts = await fetchAPI('/accounts');
-        if (accounts && accounts.length > 0) return accounts[0].id;
+        console.log(`Debug: fetching /accounts returned ${accounts ? accounts.length : 0} accounts.`);
+        if (accounts && accounts.length > 0) {
+            console.log(`Debug: Found account via Strategy 1 (List Accounts): ${accounts[0].id}`);
+            // Check if our target account is in this list if we derived it elsewhere? 
+            // Actually, let's just use the first one or continue if we want to match domain?
+            // The original logic just took the first one.
+            return accounts[0].id;
+        }
     } catch (e) {
         console.log('Could not list accounts directly (likely missing "Account:Read" permission). Attempting to derive from Zone...');
     }
@@ -49,11 +58,11 @@ async function getAccountId() {
     for (let i = 0; i < parts.length - 1; i++) {
         const checkDomain = parts.slice(i).join('.');
         try {
-            const zones = await fetchAPI(`/zones?name=${checkDomain}`);
+            const zones = await fetchAPI(`/zones?name=${encodeURIComponent(checkDomain)}`);
             if (zones && zones.length > 0) {
                 const match = zones.find(z => z.name === checkDomain);
                 if (match && match.account && match.account.id) {
-                    console.log(`Found account ID ${match.account.id} via zone ${checkDomain}`);
+                    console.log(`Found account ID ${match.account.id} via zone ${checkDomain} (Strategy 2)`);
                     return match.account.id;
                 }
             }
@@ -74,7 +83,7 @@ async function findZoneId(domain, accountId) {
     for (let i = 0; i < parts.length - 1; i++) {
         const checkDomain = parts.slice(i).join('.');
         try {
-            const zones = await fetchAPI(`/zones?name=${checkDomain}&account.id=${accountId}`);
+            const zones = await fetchAPI(`/zones?name=${encodeURIComponent(checkDomain)}&account.id=${accountId}`);
             if (zones && zones.length > 0) {
                 // Pick the one that exactly matches
                 const match = zones.find(z => z.name === checkDomain);
@@ -95,52 +104,82 @@ async function findZoneId(domain, accountId) {
 async function setupTunnel() {
     try {
         console.log('Starting Cloudflare Tunnel Setup...');
+
+        // Verify Token Capabilities
+        try {
+            const verify = await fetchAPI('/user/tokens/verify');
+            console.log('Token Verification Response:', JSON.stringify(verify));
+        } catch (e) {
+            console.error('Token Failed Verification Request:', e);
+        }
+
+        // Verify User Identity
+        try {
+            const user = await fetchAPI('/user');
+            console.log(`Debug: Authenticated as User: ${user.email} (ID: ${user.id})`);
+        } catch (e) {
+            console.log('Debug: Could not fetch /user details (Token might be limited to Account/Zone only).');
+        }
+
         const accountId = await getAccountId();
         console.log(`Using Account ID: ${accountId}`);
 
+        // DNS Setup
+        // We do this EARLY now to verify Zone permissions before Tunnel permissions
+        let zoneId;
+        try {
+            zoneId = await findZoneId(CLOUDFLARE_DOMAIN, accountId);
+            console.log(`Using Zone ID: ${zoneId}`);
+        } catch (e) {
+            console.log('Zone check failed (likely Zone permissions missing). Proceeding anyway in case Account permissions work...');
+        }
+
         // Check if tunnel exists
-        const tunnels = await fetchAPI(`/accounts/${accountId}/tunnels?name=${CLOUDFLARE_TUNNEL_NAME}&is_deleted=false`);
         let tunnelId;
         let tunnelToken;
 
-        // If tunnel exists, we must delete it to generate new credentials (cannot retrieve existing secret)
-        // unless we want to assume the user has mounted credentials, but the prompt implies we set it up.
-        if (tunnels.length > 0) {
-            console.log(`Tunnel '${CLOUDFLARE_TUNNEL_NAME}' exists. Deleting to recreate (needed for credentials)...`);
-            tunnelId = tunnels[0].id;
 
-            // Delete connections? Sometimes needed. Cleanup first.
-            await fetchAPI(`/accounts/${accountId}/tunnels/${tunnelId}/connections`, { method: 'DELETE' }).catch(() => { });
-            await fetchAPI(`/accounts/${accountId}/tunnels/${tunnelId}`, { method: 'DELETE' });
+
+        try {
+            // Check for existing tunnels with the same name to avoid duplicates
+            // We use a simple list request and filter in memory to be safe against permission quirks with query params
+            const allTunnels = await fetchAPI(`/accounts/${accountId}/tunnels?per_page=50`);
+            const matchingTunnels = allTunnels.filter(t => t.name === CLOUDFLARE_TUNNEL_NAME && !t.deleted_at);
+
+            if (matchingTunnels.length > 0) {
+                console.log(`Tunnel '${CLOUDFLARE_TUNNEL_NAME}' exists. Deleting to recreate (needed for credentials)...`);
+                tunnelId = matchingTunnels[0].id;
+
+                // Cleanup existing connections first
+                await fetchAPI(`/accounts/${accountId}/tunnels/${tunnelId}/connections`, { method: 'DELETE' }).catch(() => { });
+                await fetchAPI(`/accounts/${accountId}/tunnels/${tunnelId}`, { method: 'DELETE' });
+            }
+
+            // Create Tunnel
+            console.log('Creating new tunnel...');
+            const tunnelSecret = randomBytes(32).toString('base64');
+            const createRes = await fetchAPI(`/accounts/${accountId}/tunnels`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: CLOUDFLARE_TUNNEL_NAME,
+                    tunnel_secret: tunnelSecret
+                })
+            });
+
+            tunnelId = createRes.id;
+            tunnelToken = createRes.token;
+            console.log(`Tunnel created with ID: ${tunnelId}`);
+
+        } catch (apiErr) {
+            console.error('API Creation/Deletion of Tunnel Failed.');
+            throw apiErr;
         }
-
-        // Create Tunnel
-        console.log('Creating new tunnel...');
-        const tunnelSecret = randomBytes(32).toString('base64');
-        const createRes = await fetchAPI(`/accounts/${accountId}/tunnels`, {
-            method: 'POST',
-            body: JSON.stringify({
-                name: CLOUDFLARE_TUNNEL_NAME,
-                tunnel_secret: tunnelSecret
-            })
-        });
-
-        tunnelId = createRes.id;
-        tunnelToken = createRes.token; // This token can be used with `cloudflared tunnel run --token`
-        console.log(`Tunnel created with ID: ${tunnelId}`);
-
-        // We don't necessarily need the credentials.json file if we have the token
-        // cloudflared tunnel run --token <token> is sufficient.
-
-        // DNS Setup
-        const zoneId = await findZoneId(CLOUDFLARE_DOMAIN, accountId);
-        console.log(`Using Zone ID: ${zoneId}`);
 
         // CNAME target
         const cnameTarget = `${tunnelId}.cfargotunnel.com`;
 
         // Check existing DNS
-        const dnsRecords = await fetchAPI(`/zones/${zoneId}/dns_records?type=CNAME&name=${CLOUDFLARE_DOMAIN}`);
+        const dnsRecords = await fetchAPI(`/zones/${zoneId}/dns_records?type=CNAME&name=${encodeURIComponent(CLOUDFLARE_DOMAIN)}`);
         const existingRecord = dnsRecords.find(r => r.name === CLOUDFLARE_DOMAIN);
 
         if (existingRecord) {
