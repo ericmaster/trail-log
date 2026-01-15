@@ -111,8 +111,6 @@
                 <!-- Upload Arrow -->
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
-                <!-- Tactical Accents -->
-                <path d="M9 18h6" opacity="0.3" />
               </svg>
             </div>
             <h3 class="h4 mb-3">{$t("landing.step1_title")}</h3>
@@ -136,8 +134,8 @@
                 <!-- Pulse Wave -->
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                 <!-- Tactical Accents -->
-                <circle cx="15" cy="21" r="1" fill="currentColor" />
-                <circle cx="9" cy="3" r="1" fill="currentColor" />
+                <circle cx="15" cy="21" r="0.5" fill="currentColor" />
+                <circle cx="9" cy="3" r="0.5" fill="currentColor" />
               </svg>
             </div>
             <h3 class="h4 mb-3">{$t("landing.step2_title")}</h3>
