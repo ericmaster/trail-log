@@ -11,43 +11,60 @@
     }
 </script>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-transparent pt-4 mb-4">
-    <div class="container">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-nav px-3 py-2">
+    <div class="container-fluid">
         <a
-            class="navbar-brand fw-bold fs-3 d-flex align-items-center gap-2"
+            class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2"
             href="/"
         >
             <img
                 src={logo}
                 alt="Trail Log Logo"
-                width="40"
-                height="40"
+                width="32"
+                height="32"
                 class="d-inline-block align-text-top"
             />
-            {$t("app.title")}
+            <span class="tracking-tighter">{$t("app.title")}</span>
         </a>
-        <div class="d-flex gap-3 align-items-center">
+        <div class="d-flex gap-2 align-items-center">
             {#if $authState}
-                <a href="/upload" class="btn btn-outline-light"
+                <a href="/upload" class="btn btn-outline-light btn-sm px-3"
                     >{$t("app.dashboard")}</a
                 >
-                <button class="btn btn-outline-light" on:click={handleLogout}
-                    >{$t("upload.logout")}</button
+                <button
+                    class="btn btn-outline-light btn-sm px-3"
+                    on:click={handleLogout}>{$t("upload.logout")}</button
                 >
             {:else}
-                <a href="/login" class="btn btn-outline-light"
+                <a href="/login" class="btn btn-outline-light btn-sm px-3"
                     >{$t("app.login")}</a
                 >
-                <a href="/register" class="btn btn-primary"
+                <a
+                    href="/register"
+                    class="btn btn-safety-orange btn-sm px-3 shadow-sm"
                     >{$t("app.get_started")}</a
                 >
             {/if}
-            <LanguageSwitcher />
+            <div class="ms-2 border-start border-white border-opacity-10 ps-2">
+                <LanguageSwitcher />
+            </div>
         </div>
     </div>
 </nav>
 
 <style>
+    .glass-nav {
+        background: rgba(17, 24, 39, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1030;
+    }
+
+    .tracking-tighter {
+        letter-spacing: -0.02em;
+    }
+
     /* Ensure navbar sits on top if needed */
     :global(.navbar) {
         z-index: 1030;

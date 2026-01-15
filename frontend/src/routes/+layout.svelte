@@ -1,6 +1,6 @@
 <script lang="ts">
 	import favicon from "$lib/assets/trail-log-logo.svg";
-	import "bootstrap/dist/css/bootstrap.min.css";
+	import "../styles/custom.scss";
 	import Navbar from "$lib/components/Navbar.svelte";
 	import Footer from "$lib/components/Footer.svelte";
 
@@ -37,7 +37,7 @@
 
 <style>
 	:global(body) {
-		background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+		background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
 		color: #fff;
 		min-height: 100vh;
 		overflow-x: hidden;

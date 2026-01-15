@@ -159,7 +159,7 @@
         </div>
       </div>
 
-      <div class="card bg-dark text-white border-secondary mb-5 shadow">
+      <div class="card glass-card mb-5 shadow-lg">
         <div class="card-body p-4">
           <h2 class="h4 mb-4">{$t("upload.upload_file")}</h2>
 
@@ -248,7 +248,7 @@
                 >
                 <input
                   type="text"
-                  class="form-control bg-dark text-white border-secondary"
+                  class="form-control bg-dark text-white border-secondary px-3 py-2"
                   id="raceName"
                   bind:value={raceName}
                   placeholder="e.g., Ultra Trail Mont Blanc"
@@ -259,7 +259,7 @@
             <div class="mb-4">
               <label for="notes" class="form-label">{$t("upload.notes")}</label>
               <textarea
-                class="form-control bg-dark text-white border-secondary"
+                class="form-control bg-dark text-white border-secondary px-3 py-2"
                 id="notes"
                 bind:value={notes}
                 rows="3"
@@ -280,22 +280,24 @@
                   </div>
                   <InfoTooltip text={$t("upload.fatigue_desc")} />
                 </div>
-                <div class="btn-group w-100" role="group">
-                  {#each [1, 2, 3, 4, 5] as level}
-                    <input
-                      type="radio"
-                      class="btn-check"
-                      name="fatigue"
-                      id="fatigue{level}"
-                      autocomplete="off"
-                      checked={fatigueLevel === level}
-                      on:change={() => (fatigueLevel = level)}
-                    />
-                    <label
-                      class="btn btn-outline-secondary"
-                      for="fatigue{level}">{level}</label
+                <div class="px-2">
+                  <div
+                    class="d-flex justify-content-between mb-2 small text-white-50"
+                  >
+                    <span>1</span>
+                    <span class="fw-bold text-white fs-5"
+                      >{fatigueLevel || 3}</span
                     >
-                  {/each}
+                    <span>5</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    step="1"
+                    bind:value={fatigueLevel}
+                    class="w-100"
+                  />
                 </div>
               </div>
 
@@ -306,21 +308,24 @@
                   </div>
                   <InfoTooltip text={$t("upload.sleep_desc")} />
                 </div>
-                <div class="btn-group w-100" role="group">
-                  {#each [1, 2, 3, 4, 5] as level}
-                    <input
-                      type="radio"
-                      class="btn-check"
-                      name="sleep"
-                      id="sleep{level}"
-                      autocomplete="off"
-                      checked={sleepQuality === level}
-                      on:change={() => (sleepQuality = level)}
-                    />
-                    <label class="btn btn-outline-secondary" for="sleep{level}"
-                      >{level}</label
+                <div class="px-2">
+                  <div
+                    class="d-flex justify-content-between mb-2 small text-white-50"
+                  >
+                    <span>1</span>
+                    <span class="fw-bold text-white fs-5"
+                      >{sleepQuality || 3}</span
                     >
-                  {/each}
+                    <span>5</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    step="1"
+                    bind:value={sleepQuality}
+                    class="w-100"
+                  />
                 </div>
               </div>
 
@@ -361,22 +366,24 @@
                   </div>
                   <InfoTooltip text={$t("upload.general_sensation_desc")} />
                 </div>
-                <div class="btn-group w-100" role="group">
-                  {#each [1, 2, 3, 4, 5] as level}
-                    <input
-                      type="radio"
-                      class="btn-check"
-                      name="generalSensation"
-                      id="generalSensation{level}"
-                      autocomplete="off"
-                      checked={generalSensation === level}
-                      on:change={() => (generalSensation = level)}
-                    />
-                    <label
-                      class="btn btn-outline-secondary"
-                      for="generalSensation{level}">{level}</label
+                <div class="px-2">
+                  <div
+                    class="d-flex justify-content-between mb-2 small text-white-50"
+                  >
+                    <span>1</span>
+                    <span class="fw-bold text-white fs-5"
+                      >{generalSensation || 3}</span
                     >
-                  {/each}
+                    <span>5</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    step="1"
+                    bind:value={generalSensation}
+                    class="w-100"
+                  />
                 </div>
               </div>
             </div>
@@ -449,7 +456,7 @@
 
             <button
               type="submit"
-              class="btn btn-primary w-100 py-2 fw-bold"
+              class="btn btn-safety-orange w-100 py-3 mt-4"
               disabled={loading || !file}
             >
               {loading ? $t("upload.uploading") : $t("upload.upload_button")}
@@ -459,14 +466,16 @@
       </div>
 
       {#if uploads.length > 0}
-        <div class="card bg-dark text-white border-secondary shadow">
-          <div class="card-header border-secondary bg-transparent py-3">
-            <h2 class="h5 mb-0">{$t("upload.recent_uploads")}</h2>
+        <div class="card glass-card shadow-lg">
+          <div
+            class="card-header border-bottom border-white border-opacity-10 bg-transparent py-3"
+          >
+            <h2 class="h5 mb-0 text-white">{$t("upload.recent_uploads")}</h2>
           </div>
           <div class="list-group list-group-flush">
             {#each uploads as upload}
               <div
-                class="list-group-item bg-dark text-white border-secondary d-flex align-items-center gap-3 py-3"
+                class="list-group-item bg-transparent text-white border-bottom border-white border-opacity-10 d-flex align-items-center gap-3 py-3"
               >
                 <span class="fs-4">📄</span>
                 <div class="flex-grow-1">
@@ -509,12 +518,6 @@
   .drop-zone:hover {
     border-color: rgba(255, 255, 255, 0.5);
     background: rgba(255, 255, 255, 0.08);
-  }
-
-  .btn-check:checked + .btn-outline-secondary {
-    background-color: #6366f1;
-    border-color: #6366f1;
-    color: white;
   }
 
   .cursor-pointer {
