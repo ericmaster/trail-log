@@ -7,15 +7,6 @@ const CLOUDFLARE_DOMAIN = process.env.CLOUDFLARE_DOMAIN?.trim();
 const CLOUDFLARE_TUNNEL_NAME = process.env.CLOUDFLARE_TUNNEL_NAME?.trim();
 const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID?.trim();
 
-if (CLOUDFLARE_API_TOKEN) {
-    console.log(`Token provided (Length: ${CLOUDFLARE_API_TOKEN.length}, Starts with: ${CLOUDFLARE_API_TOKEN.substring(0, 4)}...)`);
-}
-
-if (!CLOUDFLARE_API_TOKEN || !CLOUDFLARE_DOMAIN || !CLOUDFLARE_TUNNEL_NAME) {
-    console.error('Missing required environment variables: CLOUDFLARE_API_TOKEN, CLOUDFLARE_DOMAIN, CLOUDFLARE_TUNNEL_NAME');
-    process.exit(1);
-}
-
 const API_BASE = 'https://api.cloudflare.com/client/v4';
 const HEADERS = {
     'Authorization': `Bearer ${CLOUDFLARE_API_TOKEN}`,
@@ -105,6 +96,14 @@ async function setupTunnel() {
     try {
         console.log('Starting Cloudflare Tunnel Setup...');
 
+        if (CLOUDFLARE_API_TOKEN) {
+            console.log(`Token provided (Length: ${CLOUDFLARE_API_TOKEN.length}, Starts with: ${CLOUDFLARE_API_TOKEN.substring(0, 4)}...)`);
+        }
+
+        if (!CLOUDFLARE_API_TOKEN || !CLOUDFLARE_DOMAIN || !CLOUDFLARE_TUNNEL_NAME) {
+            throw new Error('Missing required environment variables: CLOUDFLARE_API_TOKEN, CLOUDFLARE_DOMAIN, CLOUDFLARE_TUNNEL_NAME');
+        }
+
         // Verify Token Capabilities
         try {
             const verify = await fetchAPI('/user/tokens/verify');
@@ -137,8 +136,6 @@ async function setupTunnel() {
         // Check if tunnel exists
         let tunnelId;
         let tunnelToken;
-
-
 
         try {
             // Check for existing tunnels with the same name to avoid duplicates
