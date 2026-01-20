@@ -1,3 +1,6 @@
+import os
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -193,3 +196,35 @@ class TestFileUpload:
         data = response.json()
         assert len(data) == 1
         assert data[0]["filename"] == "test.fit"
+
+    def test_list_uploads_pagination(self, tmp_path, monkeypatch):
+        import routers.uploads
+        monkeypatch.setattr(routers.uploads, "UPLOAD_DIR", str(tmp_path))
+
+        headers = self.get_auth_header()
+
+        # Upload 25 files
+        for i in range(25):
+            client.post(
+                "/api/upload/",
+                headers=headers,
+                files={"file": (f"test_{i}.fit", b"content", "application/octet-stream")},
+            )
+
+        # Default limit is 20
+        response = client.get("/api/upload/", headers=headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) == 20
+
+        # Get next page (limit 20, so remaining 5)
+        response = client.get("/api/upload/?skip=20", headers=headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) == 5
+
+        # Test custom limit
+        response = client.get("/api/upload/?limit=10", headers=headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) == 10
