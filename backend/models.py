@@ -60,7 +60,7 @@ class Upload(Base):
     __tablename__ = "uploads"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     filename = Column(String, nullable=False)
     filepath = Column(String, nullable=False)
     upload_date = Column(DateTime(timezone=True), server_default=func.now())
