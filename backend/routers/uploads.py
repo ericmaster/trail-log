@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status, Query
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -76,9 +76,18 @@ async def upload_fit_file(
 
 @router.get("/", response_model=list[schemas.UploadResponse])
 def list_uploads(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """List all uploads for the current user."""
-    uploads = db.query(models.Upload).filter(models.Upload.user_id == current_user.id).all()
+    uploads = (
+        db.query(models.Upload)
+        .filter(models.Upload.user_id == current_user.id)
+        .order_by(models.Upload.upload_date.desc(), models.Upload.id.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
     return uploads
