@@ -1,4 +1,5 @@
 import os
+import aiofiles
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
@@ -49,8 +50,8 @@ async def upload_fit_file(
 
     # Save file
     contents = await file.read()
-    with open(filepath, "wb") as f:
-        f.write(contents)
+    async with aiofiles.open(filepath, "wb") as f:
+        await f.write(contents)
 
     # Create database record
     db_upload = models.Upload(
