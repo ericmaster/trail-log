@@ -177,7 +177,13 @@
     background-image: url($lib/assets/hero-bg.png);
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
+  }
+
+  /* Only apply fixed background on devices that support hover (desktop-like) to avoid repaint issues on mobile */
+  @media (hover: hover) {
+    #hero {
+      background-attachment: fixed;
+    }
   }
 
   .hero-overlay {
