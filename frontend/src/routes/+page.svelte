@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "svelte-i18n";
-  import heroBg from "$lib/assets/hero-bg.png";
+  import heroBg from "$lib/assets/hero-bg.webp";
 </script>
 
 <svelte:head>
@@ -174,7 +174,7 @@
 
 <style>
   #hero {
-    background-image: url($lib/assets/hero-bg.png);
+    background-image: url($lib/assets/hero-bg.webp);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
