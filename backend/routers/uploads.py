@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status, Query
-from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -17,7 +16,7 @@ UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/app/data/uploads")
 
 
 @router.post("/", response_model=schemas.UploadResponse, status_code=status.HTTP_201_CREATED)
-async def upload_fit_file(
+def upload_fit_file(
     file: UploadFile = File(...),
     session_type: Optional[str] = Form(None),
     race_name: Optional[str] = Form(None),
@@ -31,7 +30,13 @@ async def upload_fit_file(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Upload a .fit file with metadata."""
+    """Upload a .fit file with metadata.
+
+    Defined as a synchronous ``def`` route so FastAPI runs the whole handler
+    in its managed threadpool. This keeps the blocking filesystem writes and
+    database calls off the async event loop while confining the SQLAlchemy
+    session to a single thread (sessions are not thread-safe).
+    """
     # Validate file extension
     if not file.filename.lower().endswith(".fit"):
         raise HTTPException(
@@ -39,60 +44,15 @@ async def upload_fit_file(
             detail="Only .fit files are allowed",
         )
 
-    # Read the upload contents (async, non-blocking)
-    contents = await file.read()
+    # Read the upload contents from the underlying synchronous file object.
+    contents = file.file.read()
 
     # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     saved_filename = f"{timestamp}_{file.filename}"
 
-    # Offload blocking filesystem and database work to a threadpool so the
-    # event loop is not blocked while writing the file and committing.
-    db_upload = await run_in_threadpool(
-        _persist_upload,
-        db=db,
-        user_id=current_user.id,
-        saved_filename=saved_filename,
-        contents=contents,
-        filename=file.filename,
-        session_type=session_type,
-        race_name=race_name,
-        notes=notes,
-        fatigue_level=fatigue_level,
-        general_sensation=general_sensation,
-        sleep_quality=sleep_quality,
-        hydration_status=hydration_status,
-        weather_condition=weather_condition,
-        trail_condition=trail_condition,
-    )
-
-    return db_upload
-
-
-def _persist_upload(
-    *,
-    db: Session,
-    user_id: int,
-    saved_filename: str,
-    contents: bytes,
-    filename: str,
-    session_type: Optional[str],
-    race_name: Optional[str],
-    notes: Optional[str],
-    fatigue_level: Optional[int],
-    general_sensation: Optional[int],
-    sleep_quality: Optional[int],
-    hydration_status: Optional[str],
-    weather_condition: Optional[str],
-    trail_condition: Optional[str],
-) -> models.Upload:
-    """Perform the blocking filesystem and database work for an upload.
-
-    Runs in a threadpool (via ``run_in_threadpool``) so it does not block the
-    async event loop.
-    """
     # Create user directory if it doesn't exist
-    user_upload_dir = os.path.join(UPLOAD_DIR, str(user_id))
+    user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
     os.makedirs(user_upload_dir, exist_ok=True)
 
     filepath = os.path.join(user_upload_dir, saved_filename)
@@ -103,8 +63,8 @@ def _persist_upload(
 
     # Create database record
     db_upload = models.Upload(
-        user_id=user_id,
-        filename=filename,
+        user_id=current_user.id,
+        filename=file.filename,
         filepath=filepath,
         session_type=session_type,
         race_name=race_name,
