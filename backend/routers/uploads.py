@@ -48,13 +48,9 @@ async def upload_fit_file(
     # Read the upload contents without blocking the event loop.
     contents = await file.read()
 
-    # Strip any directory components to prevent path traversal (e.g. a
-    # filename like "../../evil.fit" escaping the user's upload directory).
-    safe_filename = os.path.basename(file.filename)
-
     # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    saved_filename = f"{timestamp}_{safe_filename}"
+    saved_filename = f"{timestamp}_{file.filename}"
 
     # Offload the blocking filesystem writes to a worker thread.
     user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
@@ -71,7 +67,7 @@ async def upload_fit_file(
     # of its blocking calls run together in a single worker thread.
     db_upload = models.Upload(
         user_id=current_user.id,
-        filename=safe_filename,
+        filename=file.filename,
         filepath=filepath,
         session_type=session_type,
         race_name=race_name,
