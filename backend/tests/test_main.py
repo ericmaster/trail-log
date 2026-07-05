@@ -176,6 +176,31 @@ class TestFileUpload:
         assert data["session_type"] == "training"
         assert data["fatigue_level"] == 3
 
+    def test_upload_path_traversal_is_sanitized(self, tmp_path, monkeypatch):
+        import os
+        import routers.uploads
+        monkeypatch.setattr(routers.uploads, "UPLOAD_DIR", str(tmp_path))
+
+        headers = self.get_auth_header()
+        response = client.post(
+            "/api/upload/",
+            headers=headers,
+            files={
+                "file": (
+                    "../../../../tmp/evil.fit",
+                    b"FIT file content",
+                    "application/octet-stream",
+                )
+            },
+        )
+        assert response.status_code == 201
+        stored_path = response.json()["filepath"]
+        # The stored file must stay inside UPLOAD_DIR — traversal components
+        # must have been stripped from the client-supplied filename.
+        upload_root = os.path.realpath(str(tmp_path))
+        assert os.path.realpath(stored_path).startswith(upload_root + os.sep)
+        assert ".." not in os.path.basename(stored_path)
+
     def test_list_uploads(self, tmp_path, monkeypatch):
         import routers.uploads
         monkeypatch.setattr(routers.uploads, "UPLOAD_DIR", str(tmp_path))
