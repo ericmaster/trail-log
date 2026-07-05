@@ -1,3 +1,4 @@
+import asyncio
 import os
 from datetime import datetime
 
@@ -16,7 +17,7 @@ UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/app/data/uploads")
 
 
 @router.post("/", response_model=schemas.UploadResponse, status_code=status.HTTP_201_CREATED)
-def upload_fit_file(
+async def upload_fit_file(
     file: UploadFile = File(...),
     session_type: Optional[str] = Form(None),
     race_name: Optional[str] = Form(None),
@@ -32,10 +33,10 @@ def upload_fit_file(
 ):
     """Upload a .fit file with metadata.
 
-    Defined as a synchronous ``def`` route so FastAPI runs the whole handler
-    in its managed threadpool. This keeps the blocking filesystem writes and
-    database calls off the async event loop while confining the SQLAlchemy
-    session to a single thread (sessions are not thread-safe).
+    Defined as an ``async def`` route: the request body is read without
+    blocking via ``await file.read()``, and the blocking filesystem writes and
+    database calls are offloaded to a threadpool with ``asyncio.to_thread`` so
+    they never stall the event loop.
     """
     # Validate file extension
     if not file.filename.lower().endswith(".fit"):
@@ -44,27 +45,33 @@ def upload_fit_file(
             detail="Only .fit files are allowed",
         )
 
-    # Read the upload contents from the underlying synchronous file object.
-    contents = file.file.read()
+    # Read the upload contents without blocking the event loop.
+    contents = await file.read()
+
+    # Strip any directory components to prevent path traversal (e.g. a
+    # filename like "../../evil.fit" escaping the user's upload directory).
+    safe_filename = os.path.basename(file.filename)
 
     # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    saved_filename = f"{timestamp}_{file.filename}"
+    saved_filename = f"{timestamp}_{safe_filename}"
 
-    # Create user directory if it doesn't exist
+    # Offload the blocking filesystem writes to a worker thread.
     user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
-    os.makedirs(user_upload_dir, exist_ok=True)
-
     filepath = os.path.join(user_upload_dir, saved_filename)
 
-    # Save file
-    with open(filepath, "wb") as f:
-        f.write(contents)
+    def _save_file() -> None:
+        os.makedirs(user_upload_dir, exist_ok=True)
+        with open(filepath, "wb") as f:
+            f.write(contents)
 
-    # Create database record
+    await asyncio.to_thread(_save_file)
+
+    # Create database record. The SQLAlchemy session is not thread-safe, so all
+    # of its blocking calls run together in a single worker thread.
     db_upload = models.Upload(
         user_id=current_user.id,
-        filename=file.filename,
+        filename=safe_filename,
         filepath=filepath,
         session_type=session_type,
         race_name=race_name,
@@ -76,11 +83,14 @@ def upload_fit_file(
         weather_condition=weather_condition,
         trail_condition=trail_condition,
     )
-    db.add(db_upload)
-    db.commit()
-    db.refresh(db_upload)
 
-    return db_upload
+    def _persist_upload() -> models.Upload:
+        db.add(db_upload)
+        db.commit()
+        db.refresh(db_upload)
+        return db_upload
+
+    return await asyncio.to_thread(_persist_upload)
 
 
 @router.get("/", response_model=list[schemas.UploadResponse])
