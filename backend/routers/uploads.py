@@ -14,6 +14,9 @@ router = APIRouter(prefix="/api/upload", tags=["uploads"])
 
 UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/app/data/uploads")
 
+# Read uploads in 1 MiB chunks so large files don't get loaded into memory at once
+CHUNK_SIZE = 1024 * 1024
+
 
 @router.post("/", response_model=schemas.UploadResponse, status_code=status.HTTP_201_CREATED)
 async def upload_fit_file(
@@ -47,10 +50,10 @@ async def upload_fit_file(
     saved_filename = f"{timestamp}_{file.filename}"
     filepath = os.path.join(user_upload_dir, saved_filename)
 
-    # Save file
-    contents = await file.read()
+    # Save file, streaming in chunks to avoid loading the whole upload into memory
     with open(filepath, "wb") as f:
-        f.write(contents)
+        while chunk := await file.read(CHUNK_SIZE):
+            f.write(chunk)
 
     # Create database record
     db_upload = models.Upload(
