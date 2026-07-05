@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status, Query
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -38,24 +39,72 @@ async def upload_fit_file(
             detail="Only .fit files are allowed",
         )
 
-    # Create user directory if it doesn't exist
-    user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
-    os.makedirs(user_upload_dir, exist_ok=True)
+    # Read the upload contents (async, non-blocking)
+    contents = await file.read()
 
     # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     saved_filename = f"{timestamp}_{file.filename}"
+
+    # Offload blocking filesystem and database work to a threadpool so the
+    # event loop is not blocked while writing the file and committing.
+    db_upload = await run_in_threadpool(
+        _persist_upload,
+        db=db,
+        user_id=current_user.id,
+        saved_filename=saved_filename,
+        contents=contents,
+        filename=file.filename,
+        session_type=session_type,
+        race_name=race_name,
+        notes=notes,
+        fatigue_level=fatigue_level,
+        general_sensation=general_sensation,
+        sleep_quality=sleep_quality,
+        hydration_status=hydration_status,
+        weather_condition=weather_condition,
+        trail_condition=trail_condition,
+    )
+
+    return db_upload
+
+
+def _persist_upload(
+    *,
+    db: Session,
+    user_id: int,
+    saved_filename: str,
+    contents: bytes,
+    filename: str,
+    session_type: Optional[str],
+    race_name: Optional[str],
+    notes: Optional[str],
+    fatigue_level: Optional[int],
+    general_sensation: Optional[int],
+    sleep_quality: Optional[int],
+    hydration_status: Optional[str],
+    weather_condition: Optional[str],
+    trail_condition: Optional[str],
+) -> models.Upload:
+    """Perform the blocking filesystem and database work for an upload.
+
+    Runs in a threadpool (via ``run_in_threadpool``) so it does not block the
+    async event loop.
+    """
+    # Create user directory if it doesn't exist
+    user_upload_dir = os.path.join(UPLOAD_DIR, str(user_id))
+    os.makedirs(user_upload_dir, exist_ok=True)
+
     filepath = os.path.join(user_upload_dir, saved_filename)
 
     # Save file
-    contents = await file.read()
     with open(filepath, "wb") as f:
         f.write(contents)
 
     # Create database record
     db_upload = models.Upload(
-        user_id=current_user.id,
-        filename=file.filename,
+        user_id=user_id,
+        filename=filename,
         filepath=filepath,
         session_type=session_type,
         race_name=race_name,
