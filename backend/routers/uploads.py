@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status, Query
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -49,8 +50,12 @@ async def upload_fit_file(
 
     # Save file
     contents = await file.read()
-    with open(filepath, "wb") as f:
-        f.write(contents)
+
+    def _write_file() -> None:
+        with open(filepath, "wb") as f:
+            f.write(contents)
+
+    await run_in_threadpool(_write_file)
 
     # Create database record
     db_upload = models.Upload(
