@@ -15,6 +15,9 @@ with engine.connect() as connection:
     connection.execute(
         text("CREATE INDEX IF NOT EXISTS ix_uploads_user_id ON uploads (user_id)")
     )
+    connection.execute(
+        text("CREATE INDEX IF NOT EXISTS ix_uploads_upload_date ON uploads (upload_date)")
+    )
     connection.commit()
 
 app = FastAPI(
