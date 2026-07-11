@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status, Query
-from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from typing import Optional
 
@@ -17,7 +16,7 @@ UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/app/data/uploads")
 
 
 @router.post("/", response_model=schemas.UploadResponse, status_code=status.HTTP_201_CREATED)
-async def upload_fit_file(
+def upload_fit_file(
     file: UploadFile = File(...),
     session_type: Optional[str] = Form(None),
     race_name: Optional[str] = Form(None),
@@ -45,17 +44,14 @@ async def upload_fit_file(
 
     # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    saved_filename = f"{timestamp}_{file.filename}"
+    safe_filename = os.path.basename(file.filename)
+    saved_filename = f"{timestamp}_{safe_filename}"
     filepath = os.path.join(user_upload_dir, saved_filename)
 
     # Save file
-    contents = await file.read()
-
-    def _write_file() -> None:
-        with open(filepath, "wb") as f:
-            f.write(contents)
-
-    await run_in_threadpool(_write_file)
+    contents = file.file.read()
+    with open(filepath, "wb") as f:
+        f.write(contents)
 
     # Create database record
     db_upload = models.Upload(
