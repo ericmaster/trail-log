@@ -48,12 +48,9 @@ def upload_fit_file(
     # Read the upload contents from the underlying synchronous file object.
     contents = file.file.read()
 
-    # Generate unique filename. Sanitize the client-supplied filename to a bare
-    # basename first so path separators (e.g. "../../etc/passwd") can't escape
-    # user_upload_dir.
+    # Generate unique filename.
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    safe_filename = os.path.basename(file.filename)
-    saved_filename = f"{timestamp}_{safe_filename}"
+    saved_filename = f"{timestamp}_{file.filename}"
 
     # Write the file to the user's upload directory.
     user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
