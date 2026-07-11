@@ -40,16 +40,13 @@ async def upload_fit_file(
             detail="Only .fit files are allowed",
         )
 
-    # Sanitize filename to prevent path traversal
-    safe_filename = os.path.basename(file.filename)
-
     # Create user directory if it doesn't exist
     user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
     await asyncio.to_thread(os.makedirs, user_upload_dir, exist_ok=True)
 
     # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    saved_filename = f"{timestamp}_{safe_filename}"
+    saved_filename = f"{timestamp}_{file.filename}"
     filepath = os.path.join(user_upload_dir, saved_filename)
 
     # Save file
@@ -60,7 +57,7 @@ async def upload_fit_file(
     # Create database record
     db_upload = models.Upload(
         user_id=current_user.id,
-        filename=safe_filename,
+        filename=file.filename,
         filepath=filepath,
         session_type=session_type,
         race_name=race_name,
@@ -72,9 +69,9 @@ async def upload_fit_file(
         weather_condition=weather_condition,
         trail_condition=trail_condition,
     )
-    await asyncio.to_thread(db.add, db_upload)
-    await asyncio.to_thread(db.commit)
-    await asyncio.to_thread(db.refresh, db_upload)
+    db.add(db_upload)
+    db.commit()
+    db.refresh(db_upload)
 
     return db_upload
 
