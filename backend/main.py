@@ -8,15 +8,12 @@ from routers import users, uploads
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-# create_all() skips tables that already exist, so it won't add new indexes
-# (e.g. the uploads.user_id FK index) to a database that was provisioned
-# before this index was introduced. Ensure it exists explicitly.
+# create_all() skips tables that already exist, so it won't add the new
+# uploads.user_id FK index to a database that was provisioned before this
+# index was introduced. Ensure it exists explicitly.
 with engine.connect() as connection:
     connection.execute(
         text("CREATE INDEX IF NOT EXISTS ix_uploads_user_id ON uploads (user_id)")
-    )
-    connection.execute(
-        text("CREATE INDEX IF NOT EXISTS ix_uploads_upload_date ON uploads (upload_date)")
     )
     connection.commit()
 

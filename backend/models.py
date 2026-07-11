@@ -63,7 +63,7 @@ class Upload(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     filename = Column(String, nullable=False)
     filepath = Column(String, nullable=False)
-    upload_date = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+    upload_date = Column(DateTime(timezone=True), server_default=func.now())
 
     # Session metadata
     session_type = Column(SQLEnum(SessionTypeEnum), nullable=True)
