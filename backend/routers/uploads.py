@@ -1,6 +1,4 @@
-import asyncio
 import os
-import aiofiles
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status, Query
@@ -18,7 +16,7 @@ UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/app/data/uploads")
 
 
 @router.post("/", response_model=schemas.UploadResponse, status_code=status.HTTP_201_CREATED)
-async def upload_fit_file(
+def upload_fit_file(
     file: UploadFile = File(...),
     session_type: Optional[str] = Form(None),
     race_name: Optional[str] = Form(None),
@@ -42,17 +40,18 @@ async def upload_fit_file(
 
     # Create user directory if it doesn't exist
     user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
-    await asyncio.to_thread(os.makedirs, user_upload_dir, exist_ok=True)
+    os.makedirs(user_upload_dir, exist_ok=True)
 
     # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    saved_filename = f"{timestamp}_{file.filename}"
+    safe_filename = os.path.basename(file.filename)
+    saved_filename = f"{timestamp}_{safe_filename}"
     filepath = os.path.join(user_upload_dir, saved_filename)
 
     # Save file
-    contents = await file.read()
-    async with aiofiles.open(filepath, "wb") as f:
-        await f.write(contents)
+    contents = file.file.read()
+    with open(filepath, "wb") as f:
+        f.write(contents)
 
     # Create database record
     db_upload = models.Upload(
