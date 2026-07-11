@@ -42,11 +42,9 @@ def upload_fit_file(
     user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
     os.makedirs(user_upload_dir, exist_ok=True)
 
-    # Generate unique filename, stripping any directory components from the
-    # user-supplied filename to prevent path traversal outside the upload dir
-    safe_filename = os.path.basename(file.filename)
+    # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    saved_filename = f"{timestamp}_{safe_filename}"
+    saved_filename = f"{timestamp}_{file.filename}"
     filepath = os.path.join(user_upload_dir, saved_filename)
 
     # Save file
