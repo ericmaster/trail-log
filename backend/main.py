@@ -1,11 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from database import engine, Base
 from routers import users, uploads
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
+
+# create_all() skips tables that already exist, so it won't add new
+# indexes to a database that was provisioned before they were introduced.
+# Ensure they exist explicitly.
+with engine.connect() as connection:
+    connection.execute(
+        text("CREATE INDEX IF NOT EXISTS ix_uploads_user_id ON uploads (user_id)")
+    )
+    connection.execute(
+        text("CREATE INDEX IF NOT EXISTS ix_uploads_upload_date ON uploads (upload_date)")
+    )
+    connection.commit()
 
 app = FastAPI(
     title="Trail Fit Uploader API",
