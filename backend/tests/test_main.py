@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -175,6 +177,24 @@ class TestFileUpload:
         assert data["filename"] == "activity.fit"
         assert data["session_type"] == "training"
         assert data["fatigue_level"] == 3
+
+    def test_upload_sanitizes_path_traversal_filename(self, tmp_path, monkeypatch):
+        import routers.uploads
+        monkeypatch.setattr(routers.uploads, "UPLOAD_DIR", str(tmp_path))
+
+        headers = self.get_auth_header()
+        response = client.post(
+            "/api/upload/",
+            headers=headers,
+            files={"file": ("../../../../etc/passwd.fit", b"malicious content", "application/octet-stream")},
+        )
+        assert response.status_code == 201
+        data = response.json()
+
+        saved_path = Path(data["filepath"]).resolve()
+        assert tmp_path.resolve() in saved_path.parents
+        assert saved_path.is_file()
+        assert not saved_path.name.startswith("..")
 
     def test_list_uploads(self, tmp_path, monkeypatch):
         import routers.uploads
