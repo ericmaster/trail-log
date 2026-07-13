@@ -32,17 +32,23 @@ def upload_fit_file(
 ):
     """Upload a .fit file with metadata.
 
-    Defined as a synchronous ``def`` route: because it performs blocking
-    filesystem writes and synchronous database commits, FastAPI runs the entire
-    endpoint (dependency injection, I/O, and Pydantic serialization) in a worker
-    thread, so the event loop is never stalled and the SQLAlchemy session stays
-    bound to a single thread.
+    Defined as a synchronous ``def`` route so the blocking filesystem writes
+    and synchronous database commits run in a worker thread instead of on the
+    event loop.
     """
     # Validate file extension
-    if not file.filename.lower().endswith(".fit"):
+    if not file.filename or not file.filename.lower().endswith(".fit"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Only .fit files are allowed",
+        )
+
+    # Sanitize filename to prevent path traversal
+    safe_filename = os.path.basename(file.filename)
+    if not safe_filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid filename",
         )
 
     # Read the upload contents from the underlying synchronous file object.
@@ -50,7 +56,7 @@ def upload_fit_file(
 
     # Generate unique filename.
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    saved_filename = f"{timestamp}_{file.filename}"
+    saved_filename = f"{timestamp}_{safe_filename}"
 
     # Write the file to the user's upload directory.
     user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
