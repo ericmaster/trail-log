@@ -37,3 +37,6 @@ data/uploads/
 
 # SvelteKit
 .svelte-kit/
+
+# Agent scratch workspace (venvs, baseline checkouts, test env/db - never /tmp)
+.scratch/

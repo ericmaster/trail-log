@@ -29,6 +29,18 @@ Trail Fit Uploader is a full-stack web application designed to collect and analy
   - When modifying `models.py`, ensure `docker compose down` and `up` are run to apply changes (unless using Alembic migrations, which are not currently set up).
   - IMPORTANT: The project currently relies on `Base.metadata.create_all(bind=engine)` in `main.py` (or implied startup) for table creation. Adding columns often requires a hard reset or manual migration if data preservation is needed.
 
+## Agent Scratch Workspace
+- **Never stage scratch artifacts under `/tmp`.** Exec/review sandboxes restrict writes to this
+  repo's worktree, so anything under `/tmp` (Python venvs, baseline checkouts for diffing, test
+  `.env`/`.db` files) gets denied (`Write`, output redirection, `mkdir`) and burns retry cycles.
+  Use the gitignored `.scratch/` directory at the repo root for all of these instead.
+- **Baseline diff** (comparing behavior against a previous commit): use `git worktree add
+  .scratch/baseline-<ref> <ref>` and `git worktree remove .scratch/baseline-<ref>` when done,
+  instead of a separate out-of-tree checkout.
+- **Python venv** (for the FastAPI backend or any local tooling): `uv venv .scratch/venv` (or
+  `python -m venv .scratch/venv`).
+- **Test env/db files**: e.g. `.scratch/test.env`, `.scratch/test.db`.
+
 ## Recent Changes (Session Context)
 - **Multilingual Support**: added `src/lib/i18n` with English and Spanish.
 - **General Sensation Metric**:
