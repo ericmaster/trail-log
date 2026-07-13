@@ -44,8 +44,7 @@ def upload_fit_file(
 
     # Generate unique filename
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    safe_filename = os.path.basename(file.filename)
-    saved_filename = f"{timestamp}_{safe_filename}"
+    saved_filename = f"{timestamp}_{file.filename}"
     filepath = os.path.join(user_upload_dir, saved_filename)
 
     # Save file
