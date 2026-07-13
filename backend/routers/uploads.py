@@ -16,7 +16,7 @@ UPLOAD_DIR = os.getenv("UPLOAD_DIR", "/app/data/uploads")
 
 
 @router.post("/", response_model=schemas.UploadResponse, status_code=status.HTTP_201_CREATED)
-async def upload_fit_file(
+def upload_fit_file(
     file: UploadFile = File(...),
     session_type: Optional[str] = Form(None),
     race_name: Optional[str] = Form(None),
@@ -30,29 +30,43 @@ async def upload_fit_file(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Upload a .fit file with metadata."""
+    """Upload a .fit file with metadata.
+
+    Defined as a synchronous ``def`` route so the blocking filesystem writes
+    and synchronous database commits run in a worker thread instead of on the
+    event loop.
+    """
     # Validate file extension
-    if not file.filename.lower().endswith(".fit"):
+    if not file.filename or not file.filename.lower().endswith(".fit"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Only .fit files are allowed",
         )
 
-    # Create user directory if it doesn't exist
-    user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
-    os.makedirs(user_upload_dir, exist_ok=True)
+    # Sanitize filename to prevent path traversal
+    safe_filename = os.path.basename(file.filename)
+    if not safe_filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid filename",
+        )
 
-    # Generate unique filename
+    # Read the upload contents from the underlying synchronous file object.
+    contents = file.file.read()
+
+    # Generate unique filename.
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    saved_filename = f"{timestamp}_{file.filename}"
+    saved_filename = f"{timestamp}_{safe_filename}"
+
+    # Write the file to the user's upload directory.
+    user_upload_dir = os.path.join(UPLOAD_DIR, str(current_user.id))
     filepath = os.path.join(user_upload_dir, saved_filename)
 
-    # Save file
-    contents = await file.read()
+    os.makedirs(user_upload_dir, exist_ok=True)
     with open(filepath, "wb") as f:
         f.write(contents)
 
-    # Create database record
+    # Create database record.
     db_upload = models.Upload(
         user_id=current_user.id,
         filename=file.filename,
@@ -67,6 +81,7 @@ async def upload_fit_file(
         weather_condition=weather_condition,
         trail_condition=trail_condition,
     )
+
     db.add(db_upload)
     db.commit()
     db.refresh(db_upload)
