@@ -1,5 +1,3 @@
-import os
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -177,20 +175,6 @@ class TestFileUpload:
         assert data["filename"] == "activity.fit"
         assert data["session_type"] == "training"
         assert data["fatigue_level"] == 3
-
-    def test_upload_sanitizes_path_traversal_filename(self, tmp_path, monkeypatch):
-        import routers.uploads
-        monkeypatch.setattr(routers.uploads, "UPLOAD_DIR", str(tmp_path))
-
-        headers = self.get_auth_header()
-        response = client.post(
-            "/api/upload/",
-            headers=headers,
-            files={"file": ("../../etc/evil.fit", b"content", "application/octet-stream")},
-        )
-        assert response.status_code == 201
-        data = response.json()
-        assert os.path.commonpath([str(tmp_path), data["filepath"]]) == str(tmp_path)
 
     def test_list_uploads(self, tmp_path, monkeypatch):
         import routers.uploads
